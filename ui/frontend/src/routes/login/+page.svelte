@@ -3,6 +3,7 @@
   import { login } from "$lib/pocketbase";
   import { alertOnFailure } from "$lib/pocketbase/ui";
   import toast from "svelte-french-toast";
+  import { Label, Input, Checkbox, Button, GradientButton} from 'flowbite-svelte';
 
   const DEFAULTS = {
     email: "",
@@ -23,71 +24,60 @@
   }
 </script>
 
-<div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
-  <div class="sm:mx-auto sm:w-full sm:max-w-md">
-    <img class="mx-auto h-28 w-auto" src="/images/360-noscope.png" alt="360-noscope" />
-    <h2 class="text-center text-2xl font-medium leading-9 tracking-tight text-gray-900">
-      <span class="font-bold">360-noscope</span>
-    </h2>
-  </div>
+<div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gradient-to-r from-primary-700 to-accent-400">
+
 
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
     <div class="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
+      <div class="sm:mx-auto sm:w-full sm:max-w-md">
+        <img class="h-24 w-auto mx-auto" src="/images/helm-architect-color-typo.png" alt="helm-architect-logo" />
+        <!-- <h2 class="text-center text-xl font-medium leading-9 tracking-tight text-primary-700">
+          <span class="font-medium">Helm Architect</span>
+        </h2> -->
+      </div>
       <form class="space-y-6" on:submit|preventDefault={submit} method="POST">
         <div>
-          <label for="email" class="block text-sm font-medium leading-6 text-gray-900"
-            >E-Mail</label
-          >
-          <div class="mt-2">
-            <input type="email" class="input input-bordered w-full" bind:value={user.email} />
-          </div>
+          <Label class="space-y-2">
+            <span>Email address</span>
+            <Input type="email" size="md" bind:value={user.email} />
+          </Label>
         </div>
 
         <div>
-          <label for="password" class="block text-sm font-medium leading-6 text-gray-900"
-            >Passwort</label
-          >
-          <div class="mt-2">
-            <input
-              type="password"
-              placeholder=""
-              class="input input-bordered w-full"
-              bind:value={user.password}
-            />
-          </div>
+          <Label class="space-y-2">
+            <span>Password</span>
+            <Input type="password" size="md" bind:value={user.password} />
+          </Label>
         </div>
 
         <div class="flex items-center justify-between">
           <div class="flex items-center">
-            <input type="checkbox" class="checkbox" />
-            <label for="remember-me" class="ml-3 block text-sm leading-6 text-gray-900"
-              >Email speichern</label
-            >
+            <Checkbox>Remember me</Checkbox>
           </div>
 
           <div class="text-sm leading-6">
-            <a href="/fake" class="font-semibold ">Passwort vergessen?</a>
+            <a href="/fake" class="font-semibold ">Forgot password?</a>
           </div>
         </div>
 
         <div>
-          <button class="btn w-full">Anmelden</button>
+          <Button class="w-full">Log in</Button>
         </div>
       </form>
 
-      <div>
+      <!-- <div>
         <div class="relative mt-10">
           <div class="absolute inset-0 flex items-center" aria-hidden="true">
             <div class="w-full border-t border-gray-200" />
           </div>
           <div class="relative flex justify-center text-sm font-medium leading-6">
-            <span class="bg-white px-6 text-gray-900">oder</span>
+            <span class="bg-white px-6 text-gray-900">or</span>
           </div>
         </div>
 
         <div class="mt-6 grid grid-cols-2 gap-4">
           <a
-            href="/fake"
+            href="#"
             class="flex w-full items-center justify-center gap-3 rounded-md bg-red-500 px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1D9BF0]"
           >
             <svg
@@ -106,7 +96,7 @@
           </a>
 
           <a
-            href="/fake"
+            href="#"
             class="flex w-full items-center justify-center gap-3 rounded-md bg-blue-500 px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#24292F]"
           >
             <svg
@@ -124,7 +114,7 @@
             <span class="text-sm font-semibold leading-6">Microsoft</span>
           </a>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </div>
