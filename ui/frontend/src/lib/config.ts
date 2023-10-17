@@ -1,4 +1,4 @@
 export const site = {
-    name: "helmarchitect",
+    name: "HELMArchitect",
     description: "A web solution to generate Helm charts for Kubernetes applications"
 };

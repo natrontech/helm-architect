@@ -8,7 +8,7 @@
 
 </script>
 
-<Navbar class="bg-primary-700">
+<Navbar class="bg-primary-700 dark:bg-primary-700">
   <NavBrand href="/app">
     <img src="/images/helm-architect-white-typo.png" class="mr-3 h-10 sm:h-16" alt="Flowbite Logo" />
   </NavBrand>

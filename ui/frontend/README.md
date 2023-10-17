@@ -1,4 +1,4 @@
-# HelmArchitect UI
+# HELMArchitect UI
 
 ## Setup
 

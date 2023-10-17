@@ -13,3 +13,7 @@ export function avatarUrl(): string | null {
     }
     return null;
 }
+
+export function avatarUrlById(collectionId: string, userId: string, avatar: string): string {
+    return "/api/files/" + collectionId + "/" + userId + "/" + avatar;
+}
