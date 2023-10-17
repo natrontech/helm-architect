@@ -3,7 +3,7 @@
   import { login } from "$lib/pocketbase";
   import { alertOnFailure } from "$lib/pocketbase/ui";
   import toast from "svelte-french-toast";
-  import { Label, Input, Checkbox, Button, GradientButton} from 'flowbite-svelte';
+  import { Label, Input, Checkbox, Button, GradientButton } from "flowbite-svelte";
 
   const DEFAULTS = {
     email: "",
@@ -24,13 +24,17 @@
   }
 </script>
 
-<div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gradient-to-r from-primary-700 to-accent-400">
-
-
+<div
+  class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8 bg-gradient-to-r from-primary-700 to-accent-400"
+>
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
     <div class="bg-white dark:bg-gray-800 px-6 py-12 shadow sm:rounded-lg sm:px-12">
       <div class="sm:mx-auto sm:w-full sm:max-w-md mb-5">
-        <img class="h-20 w-auto mx-auto" src="/images/helm-architect-color-typo.png" alt="helm-architect-logo" />
+        <img
+          class="h-20 w-auto mx-auto"
+          src="/images/helm-architect-color-typo.png"
+          alt="helm-architect-logo"
+        />
       </div>
       <form class="space-y-6" on:submit|preventDefault={submit} method="POST">
         <div>

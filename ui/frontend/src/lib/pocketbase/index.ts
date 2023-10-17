@@ -1,5 +1,5 @@
 import { browser } from "$app/environment";
-import PocketBase, { ListResult } from "pocketbase";
+import PocketBase, { type ListResult } from "pocketbase";
 import { readable, writable, type Readable, type Subscriber } from "svelte/store";
 import type { BaseSystemFields } from "./generated-types";
 import toast from "svelte-french-toast";
@@ -101,14 +101,14 @@ export function watch<T extends Record<any, any> & BaseSystemFields>(
                     switch (action) {
                         case "update":
                             record = await expand(queryParams.expand, record);
-                            return result.items.map((item) =>
+                            return result.items.map((item: any) =>
                                 item.id === record.id ? record : item
                             );
                         case "create":
                             record = await expand(queryParams.expand, record);
                             return [...result.items, record];
                         case "delete":
-                            return result.items.filter((item) => item.id !== record.id);
+                            return result.items.filter((item: any) => item.id !== record.id);
                     }
                     return result.items;
                 })(action).then((items) => set((result = { ...result, items })));
