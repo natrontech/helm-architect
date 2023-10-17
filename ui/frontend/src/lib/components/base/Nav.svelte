@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { client } from '$lib/pocketbase';
+  import { client, logout } from '$lib/pocketbase';
   import { avatarUrl } from '$lib/utils/user.utils';
   import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, Avatar, Dropdown, DropdownItem, DropdownHeader, DropdownDivider } from 'flowbite-svelte';
 
@@ -24,6 +24,12 @@
     <DropdownItem>Dashboard</DropdownItem>
     <DropdownItem>Settings</DropdownItem>
     <DropdownDivider />
-    <DropdownItem>Sign out</DropdownItem>
+    <DropdownItem
+      on:click={
+        () => {
+          logout();
+        }
+      }
+    >Sign out</DropdownItem>
   </Dropdown>
 </Navbar>
