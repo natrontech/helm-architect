@@ -5,6 +5,7 @@
   import { site } from "$lib/config";
   import { beforeNavigate } from "$app/navigation";
   import { Toaster } from "svelte-french-toast";
+    import { DarkMode } from "flowbite-svelte";
 
   $: title = $metadata.title ? $metadata.title + " | " + site.name : site.name;
   $: description = $metadata.description ?? site.description;
@@ -28,4 +29,7 @@
   >
   <slot />
   </main>
+  <div class="absolute bottom-2 right-2">
+    <DarkMode />
+  </div>
 </div>

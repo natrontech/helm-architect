@@ -82,6 +82,8 @@ export function watch<T extends Record<any, any> & BaseSystemFields>(
     perPage = 20
 ): PageStore<T> {
     const collection = client.collection(idOrName);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     let result = new ListResult(page, perPage, 0, 0, [] as Record<any, any>[]);
     let set: Subscriber<ListResult<Record<any, any>>>;
     const store = readable(result, (_set) => {

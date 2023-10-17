@@ -28,12 +28,9 @@
 
 
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
-    <div class="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
+    <div class="bg-white dark:bg-gray-800 px-6 py-12 shadow sm:rounded-lg sm:px-12">
       <div class="sm:mx-auto sm:w-full sm:max-w-md mb-5">
         <img class="h-20 w-auto mx-auto" src="/images/helm-architect-color-typo.png" alt="helm-architect-logo" />
-        <!-- <h2 class="text-center text-xl font-medium leading-9 tracking-tight text-primary-700">
-          <span class="font-medium">Helm Architect</span>
-        </h2> -->
       </div>
       <form class="space-y-6" on:submit|preventDefault={submit} method="POST">
         <div>
@@ -56,12 +53,12 @@
           </div>
 
           <div class="text-sm leading-6">
-            <a href="#" class="font-medium ">Forgot password?</a>
+            <a href="#" class="font-medium dark:text-gray-200">Forgot password?</a>
           </div>
         </div>
 
         <div>
-          <Button class="w-full" on:click={() => submit()}>Log in</Button>
+          <Button class="w-full" type="submit" on:submit={() => submit()}>Log in</Button>
         </div>
       </form>
 
