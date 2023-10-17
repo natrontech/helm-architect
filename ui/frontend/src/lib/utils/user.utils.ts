@@ -1,14 +1,15 @@
-import { client } from '$lib/pocketbase';
+import { client } from "$lib/pocketbase";
 
-export function avatarUrl(): string | null
-{
+export function avatarUrl(): string | null {
     if (client.authStore) {
-        return "/api/files/" +
+        return (
+            "/api/files/" +
             client.authStore.model?.collectionId +
             "/" +
             client.authStore.model?.id +
             "/" +
-            client.authStore.model?.avatar;
+            client.authStore.model?.avatar
+        );
     }
-    return null
+    return null;
 }

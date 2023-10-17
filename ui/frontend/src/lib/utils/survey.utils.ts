@@ -4,7 +4,7 @@ import type {
     SurveyQuestionsResponse,
     SurveysResponse,
     SurveyThemesResponse
-} from '$lib/pocketbase/generated-types';
+} from "$lib/pocketbase/generated-types";
 import type { QuestionType } from "$lib/types/generic";
 
 export function getQuestions(survey: SurveysResponse): SurveyQuestionsResponse[] {

@@ -13,7 +13,7 @@ export const load = ({ url }) => {
     const { pathname } = url;
 
     if (browser) {
-        console.log(client.authStore.model && client.authStore.isValid)
+        console.log(client.authStore.model && client.authStore.isValid);
         if (client.authStore.model && client.authStore.isValid) {
             if (pathname === "/login/" || pathname === "/signup/") {
                 throw redirect(307, "/app");

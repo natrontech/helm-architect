@@ -71,7 +71,6 @@ export interface Indicator {
     rating: number;
 }
 
-
 // Responses
 
 // @path: /api/municipalities
