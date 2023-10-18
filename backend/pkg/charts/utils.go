@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"text/template"
 )
 
 const NEW_LINE = "\n"
@@ -43,6 +44,56 @@ func Filter[I any](inputs []I, predicate func(I) bool) []I {
 		}
 	}
 	return output
+}
+
+func ParseReplaceWrite(path string, data any) error {
+
+	parsed, err := parse(path)
+	if err != nil {
+		fmt.Println("failed parsing template:", err.Error())
+		return err
+	}
+
+	err = replace(path, parsed, data)
+	if err != nil {
+		fmt.Println("failed replacing template strings:", err.Error())
+		return err
+	}
+
+	return nil
+}
+
+func parse(path string) (*template.Template, error) {
+
+	reader, err := FileOpen(path, FILE_ALLOW_READ_WRITE_ALL)
+	if err != nil {
+		fmt.Println("failed opening template:", err.Error())
+		return nil, err
+	}
+	defer reader.Close()
+	templateAsString := FileAsString(reader)
+
+	temp, err := template.New(path).Parse(templateAsString)
+	if err != nil {
+		fmt.Println("failed parsing path:", err.Error())
+		return nil, err
+	}
+
+	return temp, nil
+}
+
+func replace(path string, t *template.Template, data any) error {
+
+	FileDelete(path)
+
+	writer, err := FileOpen(path, FILE_ALLOW_READ_WRITE_ALL|os.O_CREATE)
+	if err != nil {
+		fmt.Println("failed opening template:", err.Error())
+		return err
+	}
+	defer writer.Close()
+	err = t.Execute(writer, data)
+	return err
 }
 
 func entriesNames(dirPath string) []string {

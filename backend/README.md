@@ -11,4 +11,5 @@ go to [\[host\]/swagger/index.html](http://localhost:8080/swagger/index.html) to
 ## installing and running
 
 install: ```make build```
+
 run: ```make run```

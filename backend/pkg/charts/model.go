@@ -18,11 +18,15 @@ type Revision struct {
 }
 
 func (r *Revision) Version() semver.Version {
-	return semver.MustParse(strings.ReplaceAll(r.SemVer, "_", "."))
+	return semver.MustParse(pathVersionToSemVerString(r.SemVer))
 }
 
 func (r *Revision) SetVersion(v semver.Version) {
 	r.SemVer = semVerToPathString(v)
+}
+
+func pathVersionToSemVerString(v string) string {
+	return strings.ReplaceAll(v, "_", ".")
 }
 
 func semVerToPathString(v semver.Version) string {

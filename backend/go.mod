@@ -43,6 +43,7 @@ require (
 )
 
 require (
+	github.com/blang/semver v3.5.1+incompatible
 	github.com/caarlos0/env/v8 v8.0.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/golang/snappy v0.0.1 // indirect

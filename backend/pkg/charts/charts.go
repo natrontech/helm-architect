@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/blang/semver/v4"
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,6 +16,7 @@ func RegisterChartRoutes(e *gin.Engine) {
 
 	e.GET("/api/alpha/charts", charts)
 	e.GET("/api/alpha/chart/:name/revisions", revisions)
+	e.GET("/api/alpha/chart/:name/revision/:semanticVersion", revision)
 	e.POST("/api/alpha/chart/:name/revision", createRevision)
 	e.POST("/api/alpha/chart", createChart)
 	e.DELETE("/api/alpha/chart/:name", deleteChart)
@@ -58,6 +60,44 @@ func revisions(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, store.ReadAllRevisions(chartName))
+}
+
+// revision reads a revision of a chart
+//
+//	@Summary		create a new revision of the chart
+//	@Tags			charts
+//	@Accept			json
+//	@Produce		json
+//	@Param			name				path		string				true	"name of the chart"
+//	@Param			semanticVersion		path		string				true	"version of the revision"
+//	@Success		200		{array}		string
+//	@Failure		400		{object}	ApiError
+//	@Failure		404		{object}	ApiError
+//	@Failure		500		{object}	ApiError
+//	@Router			/api/alpha/chart/{name}/revision/{semanticVersion} [get]
+func revision(c *gin.Context) {
+
+	chartName := c.Param("name")
+	semanticVersion := c.Param("semanticVersion")
+	if strings.EqualFold(chartName, "") && strings.EqualFold(semanticVersion, "") {
+		c.JSON(http.StatusBadRequest, errors.New("chart name or semantic version not specified"))
+		return
+	}
+
+	semVerString := pathVersionToSemVerString(semanticVersion)
+	v, err := semver.Parse(semVerString)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, errors.New("malformed semantic version"))
+		return
+	}
+
+	rev, err := store.ReadRevision(chartName, v)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, rev.Configuration)
 }
 
 // createRevision creates a new revision of the chart

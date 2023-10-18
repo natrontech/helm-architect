@@ -157,6 +157,63 @@
             }
         },
         "/api/alpha/chart/{name}/revision/{semanticVersion}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "charts"
+                ],
+                "summary": "create a new revision of the chart",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "name of the chart",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "version of the revision",
+                        "name": "semanticVersion",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "consumes": [
                     "application/json"

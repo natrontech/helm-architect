@@ -763,6 +763,44 @@ paths:
       summary: deletes an existing revision of the chart
       tags:
       - charts
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: name of the chart
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: version of the revision
+        in: path
+        name: semanticVersion
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+      summary: create a new revision of the chart
+      tags:
+      - charts
   /api/alpha/chart/{name}/revisions:
     get:
       consumes:

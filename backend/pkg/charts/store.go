@@ -5,13 +5,16 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/blang/semver/v4"
 	"gopkg.in/yaml.v2"
 )
 
 const CHART_BASE_ENV = "HELM_ARCHITECT_CHARTS_PATH"
+const REVISION_CHART_FILE_NAME = "Chart.yaml"
+const REVISION_VALUES_FILE_NAME = "values.yaml"
+const REVISION_TEMPLATES_DIR_NAME = "templates"
+const REVISION_INCLUDES_FILE_NAME = "includes.yaml"
 const REVISION_SUBDIR = "revisions"
 const SEMVER_SEPARATOR = "__"
 
@@ -22,15 +25,14 @@ type ChartStore interface {
 	DeleteChart(string) error
 
 	CreateRevision(string, Revision) (Revision, error)
-	ReadRevision(string, string) (Revision, error)
+	ReadRevision(string, semver.Version) (Revision, error)
 	ReadAllRevisions(string) []string
 	UpdateRevision(string, Revision) error
 	DeleteRevision(string, Revision) error
 }
 
 type FsChartStore struct {
-	BasePath              string
-	relativeRevisionsPath string // path relative to specific chart path to find revisions (NOT relative to the basePath)
+	BasePath string
 }
 
 func NewChartStore() ChartStore {
@@ -38,7 +40,6 @@ func NewChartStore() ChartStore {
 	store := new(FsChartStore)
 
 	store.BasePath = EnvOrPanic(CHART_BASE_ENV)
-	store.relativeRevisionsPath = REVISION_SUBDIR
 
 	return store
 }
@@ -66,13 +67,41 @@ func (cs *FsChartStore) DeleteChart(name string) error {
 
 func (cs *FsChartStore) CreateRevision(chartName string, revision Revision) (Revision, error) {
 
-	revisionPath := cs.revisionFilePath(chartName, revision.Version())
+	revisionPath := cs.revisionDirPath(chartName, revision.Version())
 
 	if FileExists(revisionPath) {
 		return Revision{}, errors.New("revision " + revision.SemVer + " already exists")
 	}
 
-	err := WriteYaml(revisionPath, revision)
+	err := DirCreate(revisionPath)
+	if err != nil {
+		return Revision{}, errors.New("failed creating revision")
+	}
+
+	templatesPath := filepath.Join(revisionPath, REVISION_TEMPLATES_DIR_NAME)
+	chartPath := filepath.Join(revisionPath, REVISION_CHART_FILE_NAME)
+	includesPath := filepath.Join(templatesPath, REVISION_INCLUDES_FILE_NAME)
+	valuesPath := filepath.Join(revisionPath, REVISION_VALUES_FILE_NAME)
+
+	err = DirCreate(templatesPath)
+	if err != nil {
+		return Revision{}, errors.New("charts template directory could not be written")
+	}
+	ok := FileWrite(chartPath, ChartYamlTemplate)
+	if !ok {
+		return Revision{}, errors.New("chart.yaml could not be written")
+	}
+	vals := ChartYamlTemplateValues{
+		ChartName:       chartName,
+		SemanticVersion: semVerToPathString(revision.Version()),
+	}
+	ParseReplaceWrite(chartPath, vals)
+	ok = FileWrite(includesPath, IncludesTemplate)
+	if !ok {
+		return Revision{}, errors.New("includes.yaml could not be written")
+	}
+
+	err = WriteYaml(valuesPath, revision.Configuration)
 	if err != nil {
 		return Revision{}, nil
 	}
@@ -82,7 +111,7 @@ func (cs *FsChartStore) CreateRevision(chartName string, revision Revision) (Rev
 
 func (cs *FsChartStore) ReadAllRevisions(chartName string) []string {
 
-	chartPath := filepath.Join(cs.BasePath, chartName, cs.relativeRevisionsPath)
+	chartPath := filepath.Join(cs.BasePath, chartName)
 
 	ents, err := entries(chartPath)
 	if err != nil {
@@ -90,9 +119,8 @@ func (cs *FsChartStore) ReadAllRevisions(chartName string) []string {
 	}
 
 	files := Filter(ents, func(e fs.DirEntry) bool {
-		if e.Type().IsRegular() && strings.Contains(e.Name(), SEMVER_SEPARATOR) {
-			version := strings.Split(e.Name(), SEMVER_SEPARATOR)[0]
-			_, err := semver.Parse(version)
+		if e.Type().IsDir() {
+			_, err := semver.Parse(e.Name())
 			if err != nil {
 				return true
 			}
@@ -101,8 +129,7 @@ func (cs *FsChartStore) ReadAllRevisions(chartName string) []string {
 	})
 
 	versions := Map(files, func(e fs.DirEntry) string {
-		version := strings.Split(e.Name(), SEMVER_SEPARATOR)[0]
-		v, _ := semver.Parse(version)
+		v, _ := semver.Parse(e.Name())
 		return v.String()
 	})
 
@@ -110,17 +137,16 @@ func (cs *FsChartStore) ReadAllRevisions(chartName string) []string {
 }
 
 // the semanticVersion MUST be parsable by semver lib.
-func (cs *FsChartStore) ReadRevision(chartName string, semanticVersion string) (Revision, error) {
-
-	v, err := semver.Parse(semanticVersion)
-	if err != nil {
-		return Revision{}, nil
-	}
-
-	cs.revisionFilePath(chartName, v)
+func (cs *FsChartStore) ReadRevision(chartName string, v semver.Version) (Revision, error) {
 
 	conf := new(Configuration)
-	err = ReadYaml(cs.revisionFilePath(chartName, v), conf)
+	valuesFiles := filepath.Join(cs.revisionDirPath(chartName, v), REVISION_VALUES_FILE_NAME)
+
+	if !FileExists(valuesFiles) {
+		return Revision{}, errors.New("revision '" + v.String() + "' does not exist")
+	}
+
+	err := ReadYaml(valuesFiles, conf)
 	if err != nil {
 		return Revision{}, err
 	}
@@ -147,33 +173,12 @@ func (cs *FsChartStore) DeleteRevision(chartName string, revision Revision) erro
 		return err
 	}
 
-	FileDelete(cs.revisionFilePath(chartName, v))
-
-	return nil
+	return DirDelete(cs.revisionDirPath(chartName, v))
 }
 
-func (cs *FsChartStore) revisionFilePath(chartName string, semVer semver.Version) string {
+func (cs *FsChartStore) revisionDirPath(chartName string, semVer semver.Version) string {
 
-	return filepath.Join(cs.BasePath, chartName, cs.relativeRevisionsPath, semVerToPathString(semVer)+SEMVER_SEPARATOR+chartName)
-}
-
-func (cs *FsChartStore) revisionFromFile(chartName string, fileName string) (Revision, error) {
-
-	if !strings.Contains(fileName, SEMVER_SEPARATOR) {
-		return Revision{}, errors.New("invalid revision filename '" + fileName + "'")
-	}
-	semVer := semver.MustParse(strings.Split(fileName, SEMVER_SEPARATOR)[0])
-
-	conf := new(Configuration)
-	err := ReadYaml(filepath.Join(cs.BasePath, chartName, cs.relativeRevisionsPath, fileName), conf)
-	if err != nil {
-		return Revision{}, err
-	}
-
-	return Revision{
-		SemVer:        semVerToPathString(semVer),
-		Configuration: *conf,
-	}, nil
+	return filepath.Join(cs.BasePath, chartName, semVerToPathString(semVer))
 }
 
 func WriteYaml(path string, v interface{}) error {
