@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var store ChartStore = NewChartStore()
+var Store ChartStore = NewChartStore()
 
 func RegisterChartRoutes(e *gin.Engine) {
 
@@ -36,7 +36,7 @@ func RegisterChartRoutes(e *gin.Engine) {
 //	@Router			/api/alpha/charts [get]
 func charts(c *gin.Context) {
 
-	c.JSON(http.StatusOK, store.ReadAllCharts())
+	c.JSON(http.StatusOK, Store.ReadAllCharts())
 }
 
 // revisions lists all revisions of a chart
@@ -59,7 +59,7 @@ func revisions(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, store.ReadAllRevisions(chartName))
+	c.JSON(http.StatusOK, Store.ReadAllRevisions(chartName))
 }
 
 // revision reads a revision of a chart
@@ -84,14 +84,13 @@ func revision(c *gin.Context) {
 		return
 	}
 
-	semVerString := pathVersionToSemVerString(semanticVersion)
-	v, err := semver.Parse(semVerString)
+	v, err := semver.Parse(semanticVersion)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, errors.New("malformed semantic version"))
 		return
 	}
 
-	rev, err := store.ReadRevision(chartName, v)
+	rev, err := Store.ReadRevision(chartName, v)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, err.Error())
 		return
@@ -125,7 +124,7 @@ func createRevision(c *gin.Context) {
 		return
 	}
 
-	rev, err := store.CreateRevision(chartName, *revision)
+	rev, err := Store.CreateRevision(chartName, *revision)
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.New("failed creating revision"))
@@ -157,7 +156,7 @@ func deleteRevision(c *gin.Context) {
 		return
 	}
 
-	err := store.DeleteRevision(chartName, Revision{
+	err := Store.DeleteRevision(chartName, Revision{
 		SemVer:        semanticVersion,
 		Configuration: Configuration{},
 	})
@@ -192,7 +191,7 @@ func createChart(c *gin.Context) {
 		return
 	}
 
-	err = store.CreateChart(*chart)
+	err = Store.CreateChart(*chart)
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, errors.New("failed creating chart"))
@@ -220,7 +219,7 @@ func deleteChart(c *gin.Context) {
 		return
 	}
 
-	err := store.DeleteChart(chartName)
+	err := Store.DeleteChart(chartName)
 
 	if err != nil {
 		fmt.Println(err)

@@ -93,7 +93,7 @@ func (cs *FsChartStore) CreateRevision(chartName string, revision Revision) (Rev
 	}
 	vals := ChartYamlTemplateValues{
 		ChartName:       chartName,
-		SemanticVersion: semVerToPathString(revision.Version()),
+		SemanticVersion: revision.Version().String(),
 	}
 	ParseReplaceWrite(chartPath, vals)
 	ok = FileWrite(includesPath, IncludesTemplate)
@@ -136,7 +136,6 @@ func (cs *FsChartStore) ReadAllRevisions(chartName string) []string {
 	return versions
 }
 
-// the semanticVersion MUST be parsable by semver lib.
 func (cs *FsChartStore) ReadRevision(chartName string, v semver.Version) (Revision, error) {
 
 	conf := new(Configuration)
@@ -152,7 +151,7 @@ func (cs *FsChartStore) ReadRevision(chartName string, v semver.Version) (Revisi
 	}
 
 	return Revision{
-		SemVer:        semVerToPathString(v),
+		SemVer:        v.String(),
 		Configuration: *conf,
 	}, nil
 }
@@ -176,9 +175,9 @@ func (cs *FsChartStore) DeleteRevision(chartName string, revision Revision) erro
 	return DirDelete(cs.revisionDirPath(chartName, v))
 }
 
-func (cs *FsChartStore) revisionDirPath(chartName string, semVer semver.Version) string {
+func (cs *FsChartStore) revisionDirPath(chartName string, v semver.Version) string {
 
-	return filepath.Join(cs.BasePath, chartName, semVerToPathString(semVer))
+	return filepath.Join(cs.BasePath, chartName, v.String())
 }
 
 func WriteYaml(path string, v interface{}) error {

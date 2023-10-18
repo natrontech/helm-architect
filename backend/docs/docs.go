@@ -1080,7 +1080,6 @@ const docTemplate = `{
                     "$ref": "#/definitions/charts.Configuration"
                 },
                 "semanticVersionString": {
-                    "description": "use semVerToPathString(semver.Version) to get correct formatted semantic version",
                     "type": "string"
                 }
             }

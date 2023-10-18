@@ -1,8 +1,6 @@
 package charts
 
 import (
-	"strings"
-
 	"github.com/blang/semver/v4"
 )
 
@@ -13,24 +11,12 @@ type Chart struct {
 }
 
 type Revision struct {
-	SemVer        string `json:"semanticVersionString"` // use semVerToPathString(semver.Version) to get correct formatted semantic version
+	SemVer        string `json:"semanticVersionString"`
 	Configuration Configuration
 }
 
 func (r *Revision) Version() semver.Version {
-	return semver.MustParse(pathVersionToSemVerString(r.SemVer))
-}
-
-func (r *Revision) SetVersion(v semver.Version) {
-	r.SemVer = semVerToPathString(v)
-}
-
-func pathVersionToSemVerString(v string) string {
-	return strings.ReplaceAll(v, "_", ".")
-}
-
-func semVerToPathString(v semver.Version) string {
-	return strings.ReplaceAll(v.String(), ".", "_")
+	return semver.MustParse(r.SemVer)
 }
 
 type Configuration struct {

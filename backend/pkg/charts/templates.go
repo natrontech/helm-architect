@@ -1,15 +1,15 @@
 package charts
 
-const ChartYamlTemplate = `apiVersion: v2 # don't change
-	name: {{ .ChartName }} # keep in sync with path
-	description: A Helm chart for Kubernetes # required
-	type: application # don't change
-	version: {{ .SemanticVersion }} # keep in sync with path
-	appVersion: "1.16.0" # optional
-	dependencies: # don't change
-	- name: common
-		version: 10.7.0
-		repository: https://bedag.github.io/helm-charts
+const ChartYamlTemplate = `apiVersion: v2
+name: {{ .ChartName }}
+description: A Helm chart for Kubernetes
+type: application
+version: {{ .SemanticVersion }}
+appVersion: "1.16.0" # optional
+dependencies:
+    - name: common
+      version: 10.7.0
+      repository: https://bedag.github.io/helm-charts
 `
 
 type ChartYamlTemplateValues struct {
