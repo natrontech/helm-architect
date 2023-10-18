@@ -1,0 +1,1272 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "The helm architect api serves the core features of the helm architect.",
+        "title": "Helm Architect Core API",
+        "contact": {},
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "alpha"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/api/alpha/chart": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "charts"
+                ],
+                "summary": "creates an empty chart.",
+                "parameters": [
+                    {
+                        "description": "creates chart",
+                        "name": "Chart",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/charts.Chart"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/charts.Chart"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/alpha/chart/{name}": {
+            "delete": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "charts"
+                ],
+                "summary": "deletes a chart and all its revisions.",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/alpha/chart/{name}/revision": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "charts"
+                ],
+                "summary": "create a new revision of the chart",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "name of the chart",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "revision object to be created",
+                        "name": "Revision",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/charts.Revision"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/charts.Revision"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/alpha/chart/{name}/revision/{semanticVersion}": {
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "charts"
+                ],
+                "summary": "deletes an existing revision of the chart",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "name of the chart",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "semantic version of the revision to be deleted",
+                        "name": "semanticVersion",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/charts.Revision"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/alpha/chart/{name}/revisions": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "charts"
+                ],
+                "summary": "create a new revision of the chart",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "name of the chart",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/alpha/charts": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "charts"
+                ],
+                "summary": "create a new revision of the chart",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/charts.ApiError"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "charts.AffinityConfig": {
+            "type": "object",
+            "properties": {
+                "nodeAffinity": {
+                    "$ref": "#/definitions/charts.NodeAffinityConfig"
+                },
+                "podAffinity": {
+                    "$ref": "#/definitions/charts.PodAffinityConfig"
+                },
+                "podAntiAffinity": {
+                    "$ref": "#/definitions/charts.PodAntiAffinityConfig"
+                }
+            }
+        },
+        "charts.ApiError": {
+            "type": "object",
+            "properties": {
+                "detail": {
+                    "type": "string"
+                },
+                "error": {},
+                "instance": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.BackendConfig": {
+            "type": "object",
+            "properties": {
+                "serviceNameSuffix": {
+                    "type": "string"
+                },
+                "servicePort": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.BasicAuthConfig": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "existingSecret": {
+                    "type": "string"
+                },
+                "newSecret": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "passwordKey": {
+                    "type": "string"
+                },
+                "userKey": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.CapabilitiesConfig": {
+            "type": "object",
+            "properties": {
+                "add": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "drop": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "charts.Chart": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "revisions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/charts.Revision"
+                    }
+                }
+            }
+        },
+        "charts.ChecksumConfig": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.ComponentConfig": {
+            "type": "object",
+            "properties": {
+                "controller": {
+                    "$ref": "#/definitions/charts.ControllerConfig"
+                },
+                "networkPolicies": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/charts.NetworkPolicyConfig"
+                    }
+                },
+                "services": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/charts.ServiceConfig"
+                    }
+                }
+            }
+        },
+        "charts.Configuration": {
+            "type": "object",
+            "properties": {
+                "components": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/charts.ComponentConfig"
+                    }
+                },
+                "defaultTag": {
+                    "type": "string"
+                },
+                "global": {
+                    "$ref": "#/definitions/charts.GlobalConfig"
+                },
+                "ingress": {
+                    "$ref": "#/definitions/charts.IngressConfig"
+                },
+                "nameOverride": {
+                    "type": "string"
+                },
+                "namePrefix": {
+                    "type": "string"
+                },
+                "nameSuffix": {
+                    "type": "string"
+                },
+                "networkPolicy": {
+                    "$ref": "#/definitions/charts.NetworkPolicyConfig"
+                },
+                "persistentVolumeClaims": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/charts.PersistentVolumeClaimConfig"
+                    }
+                },
+                "secrets": {
+                    "$ref": "#/definitions/charts.SecretsConfig"
+                },
+                "serviceMonitor": {
+                    "$ref": "#/definitions/charts.ServiceMonitorConfig"
+                },
+                "timezone": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.ControllerConfig": {
+            "type": "object",
+            "properties": {
+                "affinity": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/charts.AffinityConfig"
+                    }
+                },
+                "automountServiceAccountToken": {
+                    "type": "boolean"
+                },
+                "deploy": {
+                    "type": "boolean"
+                },
+                "disableChecksumAnnotations": {
+                    "type": "boolean"
+                },
+                "dnspolicy": {
+                    "type": "string"
+                },
+                "envConfigMap": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "envFrom": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/charts.EnvRefConfig"
+                    }
+                },
+                "envSecret": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "extraAnnotations": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "extraChecksumAnnotations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/charts.ChecksumConfig"
+                    }
+                },
+                "extraLabels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "extraVolumeClaimTemplates": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/charts.VolumeClaimTemplateConfig"
+                    }
+                },
+                "forceRedeploy": {
+                    "type": "boolean"
+                },
+                "gatherMetrics": {
+                    "type": "boolean"
+                },
+                "healthCheckPath": {
+                    "type": "string"
+                },
+                "hostIPC": {
+                    "type": "boolean"
+                },
+                "hostNetwork": {
+                    "type": "boolean"
+                },
+                "hostPID": {
+                    "type": "boolean"
+                },
+                "ingressClassName": {
+                    "type": "string"
+                },
+                "ingressPort": {
+                    "type": "string"
+                },
+                "nodeSelector": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "podSecurityContext": {
+                    "$ref": "#/definitions/charts.PodSecurityContextConfig"
+                },
+                "priorityClassName": {
+                    "type": "string"
+                },
+                "replicas": {
+                    "type": "integer"
+                },
+                "restartPolicy": {
+                    "type": "string"
+                },
+                "revisionHistoryLimit": {
+                    "type": "integer"
+                },
+                "securityContext": {
+                    "$ref": "#/definitions/charts.SecurityContextConfig"
+                },
+                "serviceAccountName": {
+                    "type": "string"
+                },
+                "tolerations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/charts.TolerationConfig"
+                    }
+                },
+                "type": {
+                    "type": "string"
+                },
+                "updateStrategy": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.DefaultBackendConfig": {
+            "type": "object",
+            "properties": {
+                "serviceNameSuffix": {
+                    "type": "string"
+                },
+                "servicePort": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.EndpointConfig": {
+            "type": "object",
+            "properties": {
+                "componentSelector": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "headlessTargetPort": {
+                    "type": "integer"
+                },
+                "interval": {
+                    "type": "string"
+                },
+                "overridePasswordKey": {
+                    "type": "string"
+                },
+                "overrideUserKey": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "port": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.EnvRefConfig": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.ExistingTLSConfig": {
+            "type": "object",
+            "properties": {
+                "secret": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.GlobalConfig": {
+            "type": "object",
+            "properties": {
+                "nameOverride": {
+                    "type": "string"
+                },
+                "namePrefix": {
+                    "type": "string"
+                },
+                "nameSuffix": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.HTTPConfig": {
+            "type": "object",
+            "properties": {
+                "paths": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/charts.HTTPPathConfig"
+                    }
+                }
+            }
+        },
+        "charts.HTTPPathConfig": {
+            "type": "object",
+            "properties": {
+                "backend": {
+                    "$ref": "#/definitions/charts.BackendConfig"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "pathType": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.IngressConfig": {
+            "type": "object",
+            "properties": {
+                "annotations": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "defaultBackend": {
+                    "$ref": "#/definitions/charts.DefaultBackendConfig"
+                },
+                "deploy": {
+                    "type": "boolean"
+                },
+                "ingressClassName": {
+                    "type": "string"
+                },
+                "rules": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/charts.IngressRuleConfig"
+                    }
+                },
+                "tls": {
+                    "$ref": "#/definitions/charts.TLSConfig"
+                }
+            }
+        },
+        "charts.IngressRuleConfig": {
+            "type": "object",
+            "properties": {
+                "host": {
+                    "type": "string"
+                },
+                "http": {
+                    "$ref": "#/definitions/charts.HTTPConfig"
+                }
+            }
+        },
+        "charts.K8sTLSConfig": {
+            "type": "object"
+        },
+        "charts.LabelSelectorConfig": {
+            "type": "object",
+            "properties": {
+                "matchExpressions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/charts.LabelSelectorRequirementConfig"
+                    }
+                },
+                "matchLabels": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "charts.LabelSelectorRequirementConfig": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "operator": {
+                    "type": "string"
+                },
+                "values": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "charts.NetworkPolicyConfig": {
+            "type": "object",
+            "properties": {
+                "deploy": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "charts.NodeAffinityConfig": {
+            "type": "object",
+            "properties": {
+                "preferredDuringSchedulingIgnoredDuringExecution": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/charts.PreferredDuringSchedulingIgnoredDuringExecutionConfig"
+                    }
+                },
+                "requiredDuringSchedulingIgnoredDuringExecution": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/charts.RequiredDuringSchedulingIgnoredDuringExecutionConfig"
+                    }
+                }
+            }
+        },
+        "charts.NodeSelectorRequirementConfig": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "operator": {
+                    "type": "string"
+                },
+                "values": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "charts.NodeSelectorTermConfig": {
+            "type": "object",
+            "properties": {
+                "matchExpressions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/charts.NodeSelectorRequirementConfig"
+                    }
+                }
+            }
+        },
+        "charts.PersistentVolumeClaimConfig": {
+            "type": "object",
+            "properties": {
+                "accessModes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "string"
+                },
+                "storageClassName": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.PodAffinityConfig": {
+            "type": "object",
+            "properties": {
+                "preferredDuringSchedulingIgnoredDuringExecution": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/charts.WeightedPodAffinityTermConfig"
+                    }
+                },
+                "requiredDuringSchedulingIgnoredDuringExecution": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/charts.PodAffinityTermConfig"
+                    }
+                }
+            }
+        },
+        "charts.PodAffinityTermConfig": {
+            "type": "object",
+            "properties": {
+                "labelSelector": {
+                    "$ref": "#/definitions/charts.LabelSelectorConfig"
+                },
+                "topologyKey": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.PodAntiAffinityConfig": {
+            "type": "object",
+            "properties": {
+                "preferredDuringSchedulingIgnoredDuringExecution": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/charts.WeightedPodAffinityTermConfig"
+                    }
+                },
+                "requiredDuringSchedulingIgnoredDuringExecution": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/charts.PodAffinityTermConfig"
+                    }
+                }
+            }
+        },
+        "charts.PodSecurityContextConfig": {
+            "type": "object",
+            "properties": {
+                "fsGroup": {
+                    "type": "integer"
+                },
+                "runAsGroup": {
+                    "type": "integer"
+                },
+                "runAsNonRoot": {
+                    "type": "boolean"
+                },
+                "runAsNonRootUid": {
+                    "type": "integer"
+                },
+                "runAsUser": {
+                    "type": "integer"
+                },
+                "runAsUsername": {
+                    "type": "string"
+                },
+                "seLinuxOptions": {
+                    "$ref": "#/definitions/charts.SeLinuxOptionsConfig"
+                },
+                "securityContext": {
+                    "$ref": "#/definitions/charts.SecurityContextConfig"
+                },
+                "supplementalGroups": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "sysctls": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "windowsOptions": {
+                    "$ref": "#/definitions/charts.WindowsOptionsConfig"
+                }
+            }
+        },
+        "charts.PreferredDuringSchedulingIgnoredDuringExecutionConfig": {
+            "type": "object",
+            "properties": {
+                "preference": {
+                    "$ref": "#/definitions/charts.NodeSelectorTermConfig"
+                },
+                "weight": {
+                    "type": "integer"
+                }
+            }
+        },
+        "charts.ProvidedTLSConfig": {
+            "type": "object",
+            "properties": {
+                "cert": {
+                    "type": "string"
+                },
+                "key": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.RegistryConfig": {
+            "type": "object",
+            "properties": {
+                "pullSecret": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "charts.RequiredDuringSchedulingIgnoredDuringExecutionConfig": {
+            "type": "object",
+            "properties": {
+                "nodeSelectorTerms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/charts.NodeSelectorTermConfig"
+                    }
+                }
+            }
+        },
+        "charts.ResourcesConfig": {
+            "type": "object",
+            "properties": {
+                "limits": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "requests": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "charts.Revision": {
+            "type": "object",
+            "properties": {
+                "configuration": {
+                    "$ref": "#/definitions/charts.Configuration"
+                },
+                "semanticVersionString": {
+                    "description": "use semVerToPathString(semver.Version) to get correct formatted semantic version",
+                    "type": "string"
+                }
+            }
+        },
+        "charts.SeLinuxOptionsConfig": {
+            "type": "object",
+            "properties": {
+                "level": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "user": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.SecretsConfig": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/charts.RegistryConfig"
+                }
+            }
+        },
+        "charts.SecurityContextConfig": {
+            "type": "object",
+            "properties": {
+                "allowPrivilegeEscalation": {
+                    "type": "boolean"
+                },
+                "capabilities": {
+                    "$ref": "#/definitions/charts.CapabilitiesConfig"
+                },
+                "privileged": {
+                    "type": "boolean"
+                },
+                "procMount": {
+                    "type": "string"
+                },
+                "readOnlyRootFilesystem": {
+                    "type": "boolean"
+                },
+                "runAsGroup": {
+                    "type": "integer"
+                },
+                "runAsNonRoot": {
+                    "type": "boolean"
+                },
+                "runAsUser": {
+                    "type": "integer"
+                },
+                "runAsUsername": {
+                    "type": "string"
+                },
+                "seLinuxOptions": {
+                    "$ref": "#/definitions/charts.SeLinuxOptionsConfig"
+                },
+                "sysctls": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "windowsOptions": {
+                    "$ref": "#/definitions/charts.WindowsOptionsConfig"
+                }
+            }
+        },
+        "charts.ServiceConfig": {
+            "type": "object",
+            "properties": {
+                "clusterIP": {
+                    "type": "string"
+                },
+                "deploy": {
+                    "type": "boolean"
+                },
+                "loadBalancerClass": {
+                    "type": "string"
+                },
+                "loadBalancerIP": {
+                    "type": "string"
+                },
+                "loadBalancerSourceRanges": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "overrideSelectors": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "port": {
+                    "type": "string"
+                },
+                "protocol": {
+                    "type": "string"
+                },
+                "sessionAffinity": {
+                    "type": "string"
+                },
+                "targetPort": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.ServiceMonitorConfig": {
+            "type": "object",
+            "properties": {
+                "basicAuth": {
+                    "$ref": "#/definitions/charts.BasicAuthConfig"
+                },
+                "deploy": {
+                    "type": "boolean"
+                },
+                "endpoints": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/charts.EndpointConfig"
+                    }
+                }
+            }
+        },
+        "charts.TLSConfig": {
+            "type": "object",
+            "properties": {
+                "existing": {
+                    "$ref": "#/definitions/charts.ExistingTLSConfig"
+                },
+                "k8s": {
+                    "$ref": "#/definitions/charts.K8sTLSConfig"
+                },
+                "provided": {
+                    "$ref": "#/definitions/charts.ProvidedTLSConfig"
+                },
+                "self": {
+                    "$ref": "#/definitions/charts.TLSOptionConfig"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.TLSOptionConfig": {
+            "type": "object",
+            "properties": {
+                "alternativeDnsNames": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "commonName": {
+                    "type": "string"
+                },
+                "ipaddresses": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "validityDuration": {
+                    "type": "integer"
+                }
+            }
+        },
+        "charts.TolerationConfig": {
+            "type": "object",
+            "properties": {
+                "effect": {
+                    "type": "string"
+                },
+                "key": {
+                    "type": "string"
+                },
+                "operator": {
+                    "type": "string"
+                },
+                "tolerationSeconds": {
+                    "type": "integer"
+                },
+                "value": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.VolumeClaimTemplateConfig": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "spec": {
+                    "$ref": "#/definitions/charts.VolumeClaimTemplateSpecConfig"
+                }
+            }
+        },
+        "charts.VolumeClaimTemplateSpecConfig": {
+            "type": "object",
+            "properties": {
+                "accessModes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "resources": {
+                    "$ref": "#/definitions/charts.ResourcesConfig"
+                },
+                "storageClassName": {
+                    "type": "string"
+                }
+            }
+        },
+        "charts.WeightedPodAffinityTermConfig": {
+            "type": "object",
+            "properties": {
+                "podAffinityTerm": {
+                    "$ref": "#/definitions/charts.PodAffinityTermConfig"
+                },
+                "weight": {
+                    "type": "integer"
+                }
+            }
+        },
+        "charts.WindowsOptionsConfig": {
+            "type": "object",
+            "properties": {
+                "runAsUserName": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

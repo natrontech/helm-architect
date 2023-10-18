@@ -1,0 +1,830 @@
+basePath: /
+definitions:
+  charts.AffinityConfig:
+    properties:
+      nodeAffinity:
+        $ref: '#/definitions/charts.NodeAffinityConfig'
+      podAffinity:
+        $ref: '#/definitions/charts.PodAffinityConfig'
+      podAntiAffinity:
+        $ref: '#/definitions/charts.PodAntiAffinityConfig'
+    type: object
+  charts.ApiError:
+    properties:
+      detail:
+        type: string
+      error: {}
+      instance:
+        type: string
+      status:
+        type: integer
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+  charts.BackendConfig:
+    properties:
+      serviceNameSuffix:
+        type: string
+      servicePort:
+        type: string
+    type: object
+  charts.BasicAuthConfig:
+    properties:
+      enabled:
+        type: boolean
+      existingSecret:
+        type: string
+      newSecret:
+        additionalProperties:
+          type: string
+        type: object
+      passwordKey:
+        type: string
+      userKey:
+        type: string
+    type: object
+  charts.CapabilitiesConfig:
+    properties:
+      add:
+        items:
+          type: string
+        type: array
+      drop:
+        items:
+          type: string
+        type: array
+    type: object
+  charts.Chart:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      revisions:
+        items:
+          $ref: '#/definitions/charts.Revision'
+        type: array
+    type: object
+  charts.ChecksumConfig:
+    properties:
+      name:
+        type: string
+      value:
+        type: string
+    type: object
+  charts.ComponentConfig:
+    properties:
+      controller:
+        $ref: '#/definitions/charts.ControllerConfig'
+      networkPolicies:
+        additionalProperties:
+          $ref: '#/definitions/charts.NetworkPolicyConfig'
+        type: object
+      services:
+        additionalProperties:
+          $ref: '#/definitions/charts.ServiceConfig'
+        type: object
+    type: object
+  charts.Configuration:
+    properties:
+      components:
+        additionalProperties:
+          $ref: '#/definitions/charts.ComponentConfig'
+        type: object
+      defaultTag:
+        type: string
+      global:
+        $ref: '#/definitions/charts.GlobalConfig'
+      ingress:
+        $ref: '#/definitions/charts.IngressConfig'
+      nameOverride:
+        type: string
+      namePrefix:
+        type: string
+      nameSuffix:
+        type: string
+      networkPolicy:
+        $ref: '#/definitions/charts.NetworkPolicyConfig'
+      persistentVolumeClaims:
+        items:
+          $ref: '#/definitions/charts.PersistentVolumeClaimConfig'
+        type: array
+      secrets:
+        $ref: '#/definitions/charts.SecretsConfig'
+      serviceMonitor:
+        $ref: '#/definitions/charts.ServiceMonitorConfig'
+      timezone:
+        type: string
+    type: object
+  charts.ControllerConfig:
+    properties:
+      affinity:
+        additionalProperties:
+          $ref: '#/definitions/charts.AffinityConfig'
+        type: object
+      automountServiceAccountToken:
+        type: boolean
+      deploy:
+        type: boolean
+      disableChecksumAnnotations:
+        type: boolean
+      dnspolicy:
+        type: string
+      envConfigMap:
+        additionalProperties:
+          type: string
+        type: object
+      envFrom:
+        items:
+          $ref: '#/definitions/charts.EnvRefConfig'
+        type: array
+      envSecret:
+        additionalProperties:
+          type: string
+        type: object
+      extraAnnotations:
+        additionalProperties:
+          type: string
+        type: object
+      extraChecksumAnnotations:
+        items:
+          $ref: '#/definitions/charts.ChecksumConfig'
+        type: array
+      extraLabels:
+        additionalProperties:
+          type: string
+        type: object
+      extraVolumeClaimTemplates:
+        items:
+          $ref: '#/definitions/charts.VolumeClaimTemplateConfig'
+        type: array
+      forceRedeploy:
+        type: boolean
+      gatherMetrics:
+        type: boolean
+      healthCheckPath:
+        type: string
+      hostIPC:
+        type: boolean
+      hostNetwork:
+        type: boolean
+      hostPID:
+        type: boolean
+      ingressClassName:
+        type: string
+      ingressPort:
+        type: string
+      nodeSelector:
+        additionalProperties:
+          type: string
+        type: object
+      podSecurityContext:
+        $ref: '#/definitions/charts.PodSecurityContextConfig'
+      priorityClassName:
+        type: string
+      replicas:
+        type: integer
+      restartPolicy:
+        type: string
+      revisionHistoryLimit:
+        type: integer
+      securityContext:
+        $ref: '#/definitions/charts.SecurityContextConfig'
+      serviceAccountName:
+        type: string
+      tolerations:
+        items:
+          $ref: '#/definitions/charts.TolerationConfig'
+        type: array
+      type:
+        type: string
+      updateStrategy:
+        type: string
+    type: object
+  charts.DefaultBackendConfig:
+    properties:
+      serviceNameSuffix:
+        type: string
+      servicePort:
+        type: string
+    type: object
+  charts.EndpointConfig:
+    properties:
+      componentSelector:
+        additionalProperties:
+          type: string
+        type: object
+      headlessTargetPort:
+        type: integer
+      interval:
+        type: string
+      overridePasswordKey:
+        type: string
+      overrideUserKey:
+        type: string
+      path:
+        type: string
+      port:
+        type: string
+    type: object
+  charts.EnvRefConfig:
+    properties:
+      key:
+        type: string
+      name:
+        type: string
+    type: object
+  charts.ExistingTLSConfig:
+    properties:
+      secret:
+        type: string
+    type: object
+  charts.GlobalConfig:
+    properties:
+      nameOverride:
+        type: string
+      namePrefix:
+        type: string
+      nameSuffix:
+        type: string
+    type: object
+  charts.HTTPConfig:
+    properties:
+      paths:
+        items:
+          $ref: '#/definitions/charts.HTTPPathConfig'
+        type: array
+    type: object
+  charts.HTTPPathConfig:
+    properties:
+      backend:
+        $ref: '#/definitions/charts.BackendConfig'
+      path:
+        type: string
+      pathType:
+        type: string
+    type: object
+  charts.IngressConfig:
+    properties:
+      annotations:
+        additionalProperties:
+          type: string
+        type: object
+      defaultBackend:
+        $ref: '#/definitions/charts.DefaultBackendConfig'
+      deploy:
+        type: boolean
+      ingressClassName:
+        type: string
+      rules:
+        items:
+          $ref: '#/definitions/charts.IngressRuleConfig'
+        type: array
+      tls:
+        $ref: '#/definitions/charts.TLSConfig'
+    type: object
+  charts.IngressRuleConfig:
+    properties:
+      host:
+        type: string
+      http:
+        $ref: '#/definitions/charts.HTTPConfig'
+    type: object
+  charts.K8sTLSConfig:
+    type: object
+  charts.LabelSelectorConfig:
+    properties:
+      matchExpressions:
+        items:
+          $ref: '#/definitions/charts.LabelSelectorRequirementConfig'
+        type: array
+      matchLabels:
+        additionalProperties:
+          type: string
+        type: object
+    type: object
+  charts.LabelSelectorRequirementConfig:
+    properties:
+      key:
+        type: string
+      operator:
+        type: string
+      values:
+        items:
+          type: string
+        type: array
+    type: object
+  charts.NetworkPolicyConfig:
+    properties:
+      deploy:
+        type: boolean
+    type: object
+  charts.NodeAffinityConfig:
+    properties:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        items:
+          $ref: '#/definitions/charts.PreferredDuringSchedulingIgnoredDuringExecutionConfig'
+        type: array
+      requiredDuringSchedulingIgnoredDuringExecution:
+        items:
+          $ref: '#/definitions/charts.RequiredDuringSchedulingIgnoredDuringExecutionConfig'
+        type: array
+    type: object
+  charts.NodeSelectorRequirementConfig:
+    properties:
+      key:
+        type: string
+      operator:
+        type: string
+      values:
+        items:
+          type: string
+        type: array
+    type: object
+  charts.NodeSelectorTermConfig:
+    properties:
+      matchExpressions:
+        items:
+          $ref: '#/definitions/charts.NodeSelectorRequirementConfig'
+        type: array
+    type: object
+  charts.PersistentVolumeClaimConfig:
+    properties:
+      accessModes:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+      size:
+        type: string
+      storageClassName:
+        type: string
+    type: object
+  charts.PodAffinityConfig:
+    properties:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        items:
+          $ref: '#/definitions/charts.WeightedPodAffinityTermConfig'
+        type: array
+      requiredDuringSchedulingIgnoredDuringExecution:
+        items:
+          $ref: '#/definitions/charts.PodAffinityTermConfig'
+        type: array
+    type: object
+  charts.PodAffinityTermConfig:
+    properties:
+      labelSelector:
+        $ref: '#/definitions/charts.LabelSelectorConfig'
+      topologyKey:
+        type: string
+    type: object
+  charts.PodAntiAffinityConfig:
+    properties:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        items:
+          $ref: '#/definitions/charts.WeightedPodAffinityTermConfig'
+        type: array
+      requiredDuringSchedulingIgnoredDuringExecution:
+        items:
+          $ref: '#/definitions/charts.PodAffinityTermConfig'
+        type: array
+    type: object
+  charts.PodSecurityContextConfig:
+    properties:
+      fsGroup:
+        type: integer
+      runAsGroup:
+        type: integer
+      runAsNonRoot:
+        type: boolean
+      runAsNonRootUid:
+        type: integer
+      runAsUser:
+        type: integer
+      runAsUsername:
+        type: string
+      seLinuxOptions:
+        $ref: '#/definitions/charts.SeLinuxOptionsConfig'
+      securityContext:
+        $ref: '#/definitions/charts.SecurityContextConfig'
+      supplementalGroups:
+        items:
+          type: integer
+        type: array
+      sysctls:
+        items:
+          type: string
+        type: array
+      windowsOptions:
+        $ref: '#/definitions/charts.WindowsOptionsConfig'
+    type: object
+  charts.PreferredDuringSchedulingIgnoredDuringExecutionConfig:
+    properties:
+      preference:
+        $ref: '#/definitions/charts.NodeSelectorTermConfig'
+      weight:
+        type: integer
+    type: object
+  charts.ProvidedTLSConfig:
+    properties:
+      cert:
+        type: string
+      key:
+        type: string
+    type: object
+  charts.RegistryConfig:
+    properties:
+      pullSecret:
+        type: boolean
+    type: object
+  charts.RequiredDuringSchedulingIgnoredDuringExecutionConfig:
+    properties:
+      nodeSelectorTerms:
+        items:
+          $ref: '#/definitions/charts.NodeSelectorTermConfig'
+        type: array
+    type: object
+  charts.ResourcesConfig:
+    properties:
+      limits:
+        additionalProperties:
+          type: string
+        type: object
+      requests:
+        additionalProperties:
+          type: string
+        type: object
+    type: object
+  charts.Revision:
+    properties:
+      configuration:
+        $ref: '#/definitions/charts.Configuration'
+      semanticVersionString:
+        description: use semVerToPathString(semver.Version) to get correct formatted
+          semantic version
+        type: string
+    type: object
+  charts.SeLinuxOptionsConfig:
+    properties:
+      level:
+        type: string
+      role:
+        type: string
+      type:
+        type: string
+      user:
+        type: string
+    type: object
+  charts.SecretsConfig:
+    properties:
+      data:
+        $ref: '#/definitions/charts.RegistryConfig'
+    type: object
+  charts.SecurityContextConfig:
+    properties:
+      allowPrivilegeEscalation:
+        type: boolean
+      capabilities:
+        $ref: '#/definitions/charts.CapabilitiesConfig'
+      privileged:
+        type: boolean
+      procMount:
+        type: string
+      readOnlyRootFilesystem:
+        type: boolean
+      runAsGroup:
+        type: integer
+      runAsNonRoot:
+        type: boolean
+      runAsUser:
+        type: integer
+      runAsUsername:
+        type: string
+      seLinuxOptions:
+        $ref: '#/definitions/charts.SeLinuxOptionsConfig'
+      sysctls:
+        items:
+          type: string
+        type: array
+      windowsOptions:
+        $ref: '#/definitions/charts.WindowsOptionsConfig'
+    type: object
+  charts.ServiceConfig:
+    properties:
+      clusterIP:
+        type: string
+      deploy:
+        type: boolean
+      loadBalancerClass:
+        type: string
+      loadBalancerIP:
+        type: string
+      loadBalancerSourceRanges:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+      overrideSelectors:
+        additionalProperties:
+          type: string
+        type: object
+      port:
+        type: string
+      protocol:
+        type: string
+      sessionAffinity:
+        type: string
+      targetPort:
+        type: string
+      type:
+        type: string
+    type: object
+  charts.ServiceMonitorConfig:
+    properties:
+      basicAuth:
+        $ref: '#/definitions/charts.BasicAuthConfig'
+      deploy:
+        type: boolean
+      endpoints:
+        additionalProperties:
+          $ref: '#/definitions/charts.EndpointConfig'
+        type: object
+    type: object
+  charts.TLSConfig:
+    properties:
+      existing:
+        $ref: '#/definitions/charts.ExistingTLSConfig'
+      k8s:
+        $ref: '#/definitions/charts.K8sTLSConfig'
+      provided:
+        $ref: '#/definitions/charts.ProvidedTLSConfig'
+      self:
+        $ref: '#/definitions/charts.TLSOptionConfig'
+      type:
+        type: string
+    type: object
+  charts.TLSOptionConfig:
+    properties:
+      alternativeDnsNames:
+        items:
+          type: string
+        type: array
+      commonName:
+        type: string
+      ipaddresses:
+        items:
+          type: string
+        type: array
+      validityDuration:
+        type: integer
+    type: object
+  charts.TolerationConfig:
+    properties:
+      effect:
+        type: string
+      key:
+        type: string
+      operator:
+        type: string
+      tolerationSeconds:
+        type: integer
+      value:
+        type: string
+    type: object
+  charts.VolumeClaimTemplateConfig:
+    properties:
+      name:
+        type: string
+      spec:
+        $ref: '#/definitions/charts.VolumeClaimTemplateSpecConfig'
+    type: object
+  charts.VolumeClaimTemplateSpecConfig:
+    properties:
+      accessModes:
+        items:
+          type: string
+        type: array
+      resources:
+        $ref: '#/definitions/charts.ResourcesConfig'
+      storageClassName:
+        type: string
+    type: object
+  charts.WeightedPodAffinityTermConfig:
+    properties:
+      podAffinityTerm:
+        $ref: '#/definitions/charts.PodAffinityTermConfig'
+      weight:
+        type: integer
+    type: object
+  charts.WindowsOptionsConfig:
+    properties:
+      runAsUserName:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: The helm architect api serves the core features of the helm architect.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Helm Architect Core API
+  version: alpha
+paths:
+  /api/alpha/chart:
+    post:
+      parameters:
+      - description: creates chart
+        in: body
+        name: Chart
+        required: true
+        schema:
+          $ref: '#/definitions/charts.Chart'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/charts.Chart'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+      summary: creates an empty chart.
+      tags:
+      - charts
+  /api/alpha/chart/{name}:
+    delete:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+      summary: deletes a chart and all its revisions.
+      tags:
+      - charts
+  /api/alpha/chart/{name}/revision:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: name of the chart
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: revision object to be created
+        in: body
+        name: Revision
+        required: true
+        schema:
+          $ref: '#/definitions/charts.Revision'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/charts.Revision'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+      summary: create a new revision of the chart
+      tags:
+      - charts
+  /api/alpha/chart/{name}/revision/{semanticVersion}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: name of the chart
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: semantic version of the revision to be deleted
+        in: path
+        name: semanticVersion
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/charts.Revision'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+      summary: deletes an existing revision of the chart
+      tags:
+      - charts
+  /api/alpha/chart/{name}/revisions:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: name of the chart
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+      summary: create a new revision of the chart
+      tags:
+      - charts
+  /api/alpha/charts:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/charts.ApiError'
+      summary: create a new revision of the chart
+      tags:
+      - charts
+schemes:
+- http
+swagger: "2.0"
