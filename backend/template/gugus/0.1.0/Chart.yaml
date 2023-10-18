@@ -1,0 +1,14 @@
+apiVersion: v2 # don't change
+name: gugus # keep in sync with path
+description: A Helm chart for Kubernetes # required
+
+type: application # don't change
+
+version: 0.1.0 # keep in sync with path
+
+appVersion: "1.16.0" # optional
+
+dependencies: # don't change
+  - name: common
+    version: 10.7.0
+    repository: https://bedag.github.io/helm-charts
