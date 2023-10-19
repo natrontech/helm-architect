@@ -1,31 +1,11 @@
 <script lang="ts">
-  import {
-    Card,
-    Button,
-    Toggle,
-    Badge,
-    Avatar,
-    Tooltip,
-    Dropdown,
-    DropdownItem
-  } from "flowbite-svelte";
-  let hCard = false;
-  import { charts, teams } from "$lib/stores/data";
-  import { CheckCircleSolid, ChevronDownSolid } from "flowbite-svelte-icons";
-  import {
-    Building2,
-    MoreHorizontal,
-    PencilRuler,
-    SquareStack,
-    Trash2,
-    Users2
-  } from "lucide-svelte";
+  import { Card, Button, Badge, Avatar, Tooltip, Dropdown, DropdownItem } from "flowbite-svelte";
+  import { charts } from "$lib/stores/data";
+  import { Building2, MoreHorizontal, PencilRuler, Trash2 } from "lucide-svelte";
   import { avatarUrlById } from "$lib/utils/user.utils";
   import { page } from "$app/stores";
 
   $: activeUrl = $page.url.pathname;
-
-  let localTeams;
 </script>
 
 {#key $charts}
@@ -43,7 +23,7 @@
       <ul class="space-y-4">
         <li class="flex space-x-2 mt-4">
           <Building2 class="" />
-          <span class="text-base font-normal leading-tight ">
+          <span class="text-base font-normal leading-tight">
             <!-- @ts-ignore -->
             {#each chart?.expand.teams as team}
               {team?.name}
@@ -64,12 +44,10 @@
         </li>
       </ul>
 
-      <Button
-        class="absolute bottom-8 right-8"
-      ><MoreHorizontal /></Button>
+      <Button class="absolute bottom-8 right-8"><MoreHorizontal /></Button>
       <Dropdown {activeUrl}>
         <DropdownItem><Building2 class="inline w-5 h-5" /> Move</DropdownItem>
-        <DropdownItem href="/charts/{chart.id}"
+        <DropdownItem href="/app/charts/{chart.id}"
           ><PencilRuler class="inline w-5 h-5" /> Edit</DropdownItem
         >
         <DropdownItem><Trash2 class="inline w-5 h-5" /> Delete</DropdownItem>
