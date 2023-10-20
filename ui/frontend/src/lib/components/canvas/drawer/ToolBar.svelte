@@ -1,18 +1,5 @@
 <script lang="ts">
-  import { writable } from "svelte/store";
-  import { Boxes } from "lucide-svelte";
-
-  let isDragging = false;
-
-  function dragStart(event: any) {
-    isDragging = true;
-    event.dataTransfer.setData("text/plain", "controller");
-  }
-
-  function dragEnd(event: any) {
-    console.log("dragEnd");
-    isDragging = false;
-  }
+  import { Boxes } from "lucide-svelte"
 </script>
 
 <div
@@ -21,11 +8,7 @@
   <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
     draggable="true"
-    on:dragstart={dragStart}
-    on:dragend={dragEnd}
-    class="flex flex-col justify-center items-center hover:bg-gray-100 rounded-lg p-2 cursor-auto select-none text-primary-600 {isDragging
-      ? 'dragging'
-      : ''}"
+    class="flex flex-col justify-center items-center hover:bg-gray-100 rounded-lg p-2 cursor-auto select-none text-primary-600"
   >
     <Boxes class="w-6 h-6" />
     <div class="text-xs font-semibold">Controller</div>
