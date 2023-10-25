@@ -35,18 +35,18 @@
     }
 
     function onMouseUp() {
-    node.style.cursor = "grab";
-    document.removeEventListener("mousemove", onMouseMove);
-    document.removeEventListener("mouseup", onMouseUp);
-    if (copy) {
-      copy.style.visibility = "hidden"; // Hide the element momentarily
-      // Trigger a custom event or logic here to handle dropping if necessary
-      // Your drop logic can go here
-      document.body.removeChild(copy);
-      copy.removeAttribute("data-draggable");
+      node.style.cursor = "grab";
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseup", onMouseUp);
+      if (copy) {
+        copy.style.visibility = "hidden"; // Hide the element momentarily
+        // Trigger a custom event or logic here to handle dropping if necessary
+        // Your drop logic can go here
+        document.body.removeChild(copy);
+        copy.removeAttribute("data-draggable");
+      }
+      copy = null;
     }
-    copy = null;
-  }
 
     node.addEventListener("mousedown", onMouseDown);
     node.style.cursor = "grab";
@@ -64,13 +64,8 @@
   class="absolute z-10 left-20 bg-white p-2 shadow-lg rounded-lg bottom-1/2 translate-y-1/2 -translate-x-1/2 border-2 border-primary-600 select-none"
 >
   <div
-<<<<<<< Updated upstream
-    draggable="true"
-    class="flex flex-col justify-center items-center hover:bg-gray-100 rounded-lg p-2 cursor-auto select-none text-primary-600"
-=======
     use:dragCopy
     class="flex flex-col justify-center items-center hover:bg-gray-100 rounded-lg p-2 cursor-auto select-none text-primary-600 draggable z-20"
->>>>>>> Stashed changes
   >
     <Boxes class="w-6 h-6" />
     <div class="text-xs font-semibold">Controller</div>
