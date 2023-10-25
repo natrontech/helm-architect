@@ -1,75 +1,72 @@
 <script lang="ts">
-  import { Boxes } from "lucide-svelte";
+  import { Boxes, Database, FileCode2, FileLock2, Link2, Network } from "lucide-svelte";
+  import type { NodeConfig } from "svelvet";
+  export let dragCopy: any;
 
-  function dragCopy(node: HTMLElement) {
-    let copy: HTMLElement | null = null;
-    let offsetX = 0;
-    let offsetY = 0;
+  const defaultNodeConfig: Partial<NodeConfig> = {
+    label: "Node",
+  };
 
-    function onMouseDown(event: MouseEvent) {
-      const rect = node.getBoundingClientRect();
-      offsetX = event.clientX - rect.left;
-      offsetY = event.clientY - rect.top;
-
-      document.addEventListener("mousemove", onMouseMove);
-      document.addEventListener("mouseup", onMouseUp);
-      node.style.cursor = "grabbing";
-
-      // Create a copy of the element
-      copy = node.cloneNode(true) as HTMLElement;
-      copy.style.position = "fixed";
-      copy.style.cursor = "grabbing";
-      copy.style.top = `${event.clientY - offsetY}px`;
-      copy.style.left = `${event.clientX - offsetX}px`;
-      copy.setAttribute("data-draggable", "true");
-
-      document.body.appendChild(copy);
+  let toolbarItems = [
+    {
+      icon: Boxes,
+      nodeConfig: {
+        ...defaultNodeConfig,
+        label: "Controller",
+      } as NodeConfig // type assertion
+    },
+    {
+      icon: Network,
+      nodeConfig: {
+        ...defaultNodeConfig,
+        label: "Service",
+      } as NodeConfig // type assertion
+    },
+    {
+      icon: Link2,
+      nodeConfig: {
+        ...defaultNodeConfig,
+        label: "Ingress",
+      } as NodeConfig // type assertion
+    },
+    {
+      icon: Database,
+      nodeConfig: {
+        ...defaultNodeConfig,
+        label: "Volume",
+      } as NodeConfig // type assertion
+    },
+    {
+      icon: FileCode2,
+      nodeConfig: {
+        ...defaultNodeConfig,
+        label: "ConfigMap",
+      } as NodeConfig // type assertion
+    },
+    {
+      icon: FileLock2,
+      nodeConfig: {
+        ...defaultNodeConfig,
+        label: "Secret",
+      } as NodeConfig // type assertion
     }
+  ];
 
-    function onMouseMove(event: MouseEvent) {
-      if (copy) {
-        // Update the position of the copied element
-        copy.style.top = `${event.clientY - offsetY}px`;
-        copy.style.left = `${event.clientX - offsetX}px`;
-      }
-    }
-
-    function onMouseUp() {
-    node.style.cursor = "grab";
-    document.removeEventListener("mousemove", onMouseMove);
-    document.removeEventListener("mouseup", onMouseUp);
-    if (copy) {
-      copy.style.visibility = "hidden"; // Hide the element momentarily
-      // Trigger a custom event or logic here to handle dropping if necessary
-      // Your drop logic can go here
-      document.body.removeChild(copy);
-      copy.removeAttribute("data-draggable");
-    }
-    copy = null;
-  }
-
-    node.addEventListener("mousedown", onMouseDown);
-    node.style.cursor = "grab";
-
-    return {
-      destroy() {
-        node.removeEventListener("mousedown", onMouseDown);
-        node.style.cursor = "auto";
-      }
-    };
-  }
+  // you can add more items to toolbarItems for more customization
 </script>
 
 <div
   class="absolute z-10 left-20 bg-white p-2 shadow-lg rounded-lg bottom-1/2 translate-y-1/2 -translate-x-1/2 border-2 border-primary-600 select-none"
 >
-  <div
-    use:dragCopy
-    class="flex flex-col justify-center items-center hover:bg-gray-100 rounded-lg p-2 cursor-auto select-none text-primary-600 draggable z-20"
-  >
-    <Boxes class="w-6 h-6" />
-    <div class="text-xs font-semibold">Controller</div>
-  </div>
+  {#each toolbarItems as item}
+    <div
+      use:dragCopy={item.nodeConfig}
+      class="flex flex-col justify-center items-center hover:bg-gray-100 rounded-lg p-2 cursor-auto select-none text-primary-600 draggable z-20"
+    >
+      <svelte:component this={item.icon} class="w-6 h-6" />
+      <div class="text-xs font-semibold">{item.nodeConfig?.label}</div>
+    </div>
+  {/each}
 </div>
 
 <style>

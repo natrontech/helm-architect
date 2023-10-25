@@ -1,8 +1,11 @@
 <script lang="ts">
-  import { Boxes } from "lucide-svelte";
+  import { Boxes, Trash } from "lucide-svelte";
   import colorTheme from "$lib/stores/theme";
   import type { XYPair, EdgeStyle, NodeConfig, SvelvetConfig } from "svelvet";
-  import { Node, Svelvet } from "svelvet";
+  import { Anchor, Node, Svelvet } from "svelvet";
+  import Toolbar from "$lib/components/canvas/drawer/Toolbar.svelte";
+  import LayoutNode from "$lib/components/canvas/nodes/LayoutNode.svelte";
+  import { Button } from "flowbite-svelte";
   import type { ComponentType } from "svelte";
 
   // Toolbar props
@@ -55,7 +58,7 @@
   let dropped_in = false;
 
   // Toolbar functions
-  function dragCopy(node: HTMLElement) {
+  function dragCopy(node: HTMLElement, nodeConfig: NodeConfig) {
     let clone: HTMLElement | null = null;
     let offsetX = 0;
     let offsetY = 0;
@@ -114,7 +117,7 @@
         nodes = [
           ...nodes,
           {
-            label: "Controller",
+            ...nodeConfig,
             useDefaults: true
           }
         ];
@@ -141,21 +144,17 @@
     console.log("drag leave");
     if (dropped_in) dropped_in = false;
   };
+
+  let selectedNodeIndex: number | null = null;
+  function selectNode(index: number) {
+    console.log("select node", index);
+    selectedNodeIndex = index;
+  }
 </script>
 
 <div class="h-full w-full">
   <!-- Toolbar Component -->
-  <div
-    class="absolute z-10 left-20 bg-white p-2 shadow-lg rounded-lg bottom-1/2 translate-y-1/2 -translate-x-1/2 border-2 border-primary-600 select-none"
-  >
-    <div
-      use:dragCopy
-      class="flex flex-col justify-center items-center hover:bg-gray-100 rounded-lg p-2 cursor-auto select-none text-primary-600 draggable z-20"
-    >
-      <Boxes class="w-6 h-6" />
-      <div class="text-xs font-semibold">Controller</div>
-    </div>
-  </div>
+  <Toolbar {dragCopy} />
 
   <!-- Dropzone Component -->
   <div
@@ -165,15 +164,25 @@
     on:mouseleave={handleDragLeave}
   >
     <Svelvet id="lowcode" {...svelvetProps}>
-      {#each nodes as { ...nodeProps }}
-        <Node {...nodeProps} drop="cursor" />
+      {#each nodes as { ...nodeProps }, idx}
+        <Node {...nodeProps} drop="cursor" dynamic={true} on:nodeClicked={() => selectNode(idx)}>
+          <div
+            class="node flex flex-col justify-center items-center cursor-auto select-none draggable z-20 p-2"
+          >
+            <h1 class="text-2xl font-bold pr-10">{nodeProps.label}</h1>
+            <Button
+              class="absolute top-1 right-1 !p-2"
+              size="xs"
+              on:click={() => (
+                // remove node from nodes array without mutating the array
+                nodes = nodes.filter((_, i) => i !== idx)
+              )}
+            >
+              <Trash class="w-5 h-5" strokeWidth={2} />
+            </Button>
+          </div>
+        </Node>
       {/each}
     </Svelvet>
   </div>
 </div>
-
-<style>
-  .draggable {
-    cursor: grab;
-  }
-</style>
