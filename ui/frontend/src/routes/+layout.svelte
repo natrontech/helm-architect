@@ -5,7 +5,8 @@
   import { site } from "$lib/config";
   import { beforeNavigate } from "$app/navigation";
   import { Toaster } from "svelte-french-toast";
-    import { DarkMode } from "flowbite-svelte";
+  import { DarkMode } from "flowbite-svelte";
+  import colorTheme from "$lib/stores/theme";
 
   $: title = $metadata.title ? $metadata.title + " | " + site.name : site.name;
   $: description = $metadata.description ?? site.description;
@@ -24,12 +25,15 @@
 <div class="absolute top-0 left-0 right-0 bottom-0 overflow-hidden">
   <Toaster position="top-center" />
   <!-- only display nav when not on /login -->
-  <main
-    class="absolute top-0 left-0 right-0 bottom-0 overflow-y-auto"
-  >
-  <slot />
+  <main class="absolute top-0 left-0 right-0 bottom-0 overflow-y-auto">
+    <slot />
   </main>
-  <div class="absolute bottom-2 right-2">
+  <button class="absolute bottom-2 right-2"
+    on:click={() => {
+      $colorTheme = $colorTheme === "light" ? "dark" : "light";
+      localStorage.setItem("color-theme", $colorTheme);
+    }}
+  >
     <DarkMode />
-  </div>
+  </button>
 </div>
