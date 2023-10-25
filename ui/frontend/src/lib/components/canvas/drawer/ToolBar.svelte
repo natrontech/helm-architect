@@ -35,18 +35,18 @@
     }
 
     function onMouseUp() {
-      node.style.cursor = "grab";
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseup", onMouseUp);
-      if (copy) {
-        copy.style.visibility = "hidden"; // Hide the element momentarily
-        // Trigger a custom event or logic here to handle dropping if necessary
-        // Your drop logic can go here
-        document.body.removeChild(copy);
-        copy.removeAttribute("data-draggable");
-      }
-      copy = null;
+    node.style.cursor = "grab";
+    document.removeEventListener("mousemove", onMouseMove);
+    document.removeEventListener("mouseup", onMouseUp);
+    if (copy) {
+      copy.style.visibility = "hidden"; // Hide the element momentarily
+      // Trigger a custom event or logic here to handle dropping if necessary
+      // Your drop logic can go here
+      document.body.removeChild(copy);
+      copy.removeAttribute("data-draggable");
     }
+    copy = null;
+  }
 
     node.addEventListener("mousedown", onMouseDown);
     node.style.cursor = "grab";
