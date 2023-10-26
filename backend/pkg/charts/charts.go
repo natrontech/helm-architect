@@ -30,9 +30,9 @@ func RegisterChartRoutes(e *gin.Engine) {
 //	@Accept			json
 //	@Produce		json
 //	@Success		200		{array}		string
-//	@Failure		400		{object}	ApiError
-//	@Failure		404		{object}	ApiError
-//	@Failure		500		{object}	ApiError
+//	@Failure		400		{object}	utils.ApiError
+//	@Failure		404		{object}	utils.ApiError
+//	@Failure		500		{object}	utils.ApiError
 //	@Router			/api/alpha/charts [get]
 func charts(c *gin.Context) {
 
@@ -47,9 +47,9 @@ func charts(c *gin.Context) {
 //	@Produce		json
 //	@Param			name		path		string				true	"name of the chart"
 //	@Success		200		{array}		string
-//	@Failure		400		{object}	ApiError
-//	@Failure		404		{object}	ApiError
-//	@Failure		500		{object}	ApiError
+//	@Failure		400		{object}	utils.ApiError
+//	@Failure		404		{object}	utils.ApiError
+//	@Failure		500		{object}	utils.ApiError
 //	@Router			/api/alpha/chart/{name}/revisions [get]
 func revisions(c *gin.Context) {
 
@@ -71,9 +71,9 @@ func revisions(c *gin.Context) {
 //	@Param			name				path		string				true	"name of the chart"
 //	@Param			semanticVersion		path		string				true	"version of the revision"
 //	@Success		200		{array}		string
-//	@Failure		400		{object}	ApiError
-//	@Failure		404		{object}	ApiError
-//	@Failure		500		{object}	ApiError
+//	@Failure		400		{object}	utils.ApiError
+//	@Failure		404		{object}	utils.ApiError
+//	@Failure		500		{object}	utils.ApiError
 //	@Router			/api/alpha/chart/{name}/revision/{semanticVersion} [get]
 func revision(c *gin.Context) {
 
@@ -108,9 +108,9 @@ func revision(c *gin.Context) {
 //	@Param			name		path		string				true	"name of the chart"
 //	@Param 			Revision 	body 		Revision 			true	"revision object to be created"
 //	@Success		200		{object}	Revision
-//	@Failure		400		{object}	ApiError
-//	@Failure		404		{object}	ApiError
-//	@Failure		500		{object}	ApiError
+//	@Failure		400		{object}	utils.ApiError
+//	@Failure		404		{object}	utils.ApiError
+//	@Failure		500		{object}	utils.ApiError
 //	@Router			/api/alpha/chart/{name}/revision [post]
 func createRevision(c *gin.Context) {
 
@@ -143,9 +143,9 @@ func createRevision(c *gin.Context) {
 //	@Param			name				path		string				true	"name of the chart"
 //	@Param			semanticVersion		path		string				true	"semantic version of the revision to be deleted"
 //	@Success		200		{object}	Revision
-//	@Failure		400		{object}	ApiError
-//	@Failure		404		{object}	ApiError
-//	@Failure		500		{object}	ApiError
+//	@Failure		400		{object}	utils.ApiError
+//	@Failure		404		{object}	utils.ApiError
+//	@Failure		500		{object}	utils.ApiError
 //	@Router			/api/alpha/chart/{name}/revision/{semanticVersion} [delete]
 func deleteRevision(c *gin.Context) {
 
@@ -176,9 +176,9 @@ func deleteRevision(c *gin.Context) {
 //	@Produce		json
 //	@Param 			Chart 	body 		Chart 			true	"creates chart"
 //	@Success		200		{object}	Chart
-//	@Failure		400		{object}	ApiError
-//	@Failure		404		{object}	ApiError
-//	@Failure		500		{object}	ApiError
+//	@Failure		400		{object}	utils.ApiError
+//	@Failure		404		{object}	utils.ApiError
+//	@Failure		500		{object}	utils.ApiError
 //	@Router			/api/alpha/chart [post]
 func createChart(c *gin.Context) {
 
@@ -207,9 +207,9 @@ func createChart(c *gin.Context) {
 //	@Tags			charts
 //	@Produce		json
 //	@Success		200
-//	@Failure		400		{object}	ApiError
-//	@Failure		404		{object}	ApiError
-//	@Failure		500		{object}	ApiError
+//	@Failure		400		{object}	utils.ApiError
+//	@Failure		404		{object}	utils.ApiError
+//	@Failure		500		{object}	utils.ApiError
 //	@Router			/api/alpha/chart/{name} [delete]
 func deleteChart(c *gin.Context) {
 

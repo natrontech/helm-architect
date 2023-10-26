@@ -9,20 +9,6 @@ definitions:
       podAntiAffinity:
         $ref: '#/definitions/charts.PodAntiAffinityConfig'
     type: object
-  charts.ApiError:
-    properties:
-      detail:
-        type: string
-      error: {}
-      instance:
-        type: string
-      status:
-        type: integer
-      title:
-        type: string
-      type:
-        type: string
-    type: object
   charts.BackendConfig:
     properties:
       serviceNameSuffix:
@@ -623,7 +609,47 @@ definitions:
       runAsUserName:
         type: string
     type: object
-host: localhost:8080
+  releases.ChartReleaseOptions:
+    properties:
+      dependentHelmRepository:
+        items:
+          $ref: '#/definitions/releases.DependentHelmRepository'
+        type: array
+      ociRegistryChartUrl:
+        type: string
+      ociRegistryHostname:
+        type: string
+      ociRegistryPassword:
+        type: string
+      ociRegistryUsername:
+        type: string
+      revisionSemVer:
+        type: string
+    type: object
+  releases.DependentHelmRepository:
+    properties:
+      name:
+        description: ': "bedag",'
+        type: string
+      url:
+        description: '"https://bedag.github.io/helm-charts",'
+        type: string
+    type: object
+  utils.ApiError:
+    properties:
+      detail:
+        type: string
+      error: {}
+      instance:
+        type: string
+      status:
+        type: integer
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+host: 0.0.0.0:8090
 info:
   contact: {}
   description: The helm architect api serves the core features of the helm architect.
@@ -652,15 +678,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
       summary: creates an empty chart.
       tags:
       - charts
@@ -674,15 +700,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
       summary: deletes a chart and all its revisions.
       tags:
       - charts
@@ -712,15 +738,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
       summary: create a new revision of the chart
       tags:
       - charts
@@ -749,15 +775,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
       summary: deletes an existing revision of the chart
       tags:
       - charts
@@ -787,15 +813,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
       summary: create a new revision of the chart
       tags:
       - charts
@@ -821,15 +847,15 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
       summary: create a new revision of the chart
       tags:
       - charts
@@ -849,16 +875,54 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/charts.ApiError'
+            $ref: '#/definitions/utils.ApiError'
       summary: create a new revision of the chart
+      tags:
+      - charts
+  /api/alpha/release/{chartName}:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: name of the chart
+        in: path
+        name: chartName
+        required: true
+        type: string
+      - description: semantic version of the chart
+        in: body
+        name: releaseConfiguration
+        required: true
+        schema:
+          $ref: '#/definitions/releases.ChartReleaseOptions'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ApiError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ApiError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ApiError'
+      summary: creates a new helm release and publishes it to given registry.
       tags:
       - charts
 schemes:

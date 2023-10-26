@@ -1,4 +1,4 @@
-package charts
+package utils
 
 import (
 	"bytes"
@@ -96,9 +96,9 @@ func replace(path string, t *template.Template, data any) error {
 	return err
 }
 
-func entriesNames(dirPath string) []string {
+func EntriesNames(dirPath string) []string {
 
-	rawEntries, err := entries(dirPath)
+	rawEntries, err := Entries(dirPath)
 	if err != nil {
 		return make([]string, 0)
 	}
@@ -106,7 +106,7 @@ func entriesNames(dirPath string) []string {
 	return Map(rawEntries, func(in fs.DirEntry) string { return in.Name() })
 }
 
-func entries(dirPath string) ([]fs.DirEntry, error) {
+func Entries(dirPath string) ([]fs.DirEntry, error) {
 
 	dir, err := FileOpen(dirPath, int(os.ModeDir.Perm()))
 	if err != nil {
@@ -177,8 +177,6 @@ func FileCopy(from string, to string) bool {
 }
 
 // Copies a directory recursively from origin to destination.
-// You can define renamings. I empty or nil no renamings are executed.
-// The keys of the renamings are alwasy base name (not entire paths) and must match exactly.
 func DirCopy(origin string, destination string) (string, error) {
 
 	if !IsDirectory(origin) || FileExists(destination) {

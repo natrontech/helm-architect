@@ -20,3 +20,9 @@ generate-api-spec: check-swagger
 
 install-swagger:
 	go install github.com/swaggo/swag/cmd/swag@latest
+
+docker-build-local:
+	docker build -t helmarchitect-backend:latest .
+
+docker-run-local: build-local
+	docker run -d -p 8090:8090 --name heumarchitekt helmarchitect-backend

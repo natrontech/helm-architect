@@ -1,4 +1,4 @@
-package charts
+package utils
 
 import "github.com/gin-gonic/gin"
 

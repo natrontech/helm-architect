@@ -49,19 +49,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     }
                 }
@@ -83,19 +83,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     }
                 }
@@ -141,19 +141,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     }
                 }
@@ -200,19 +200,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     }
                 }
@@ -254,19 +254,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     }
                 }
@@ -306,19 +306,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     }
                 }
@@ -349,19 +349,77 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/charts.ApiError"
+                            "$ref": "#/definitions/utils.ApiError"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/alpha/release/{chartName}": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "charts"
+                ],
+                "summary": "creates a new helm release and publishes it to given registry.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "name of the chart",
+                        "name": "chartName",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "semantic version of the chart",
+                        "name": "releaseConfiguration",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/releases.ChartReleaseOptions"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ApiError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ApiError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ApiError"
                         }
                     }
                 }
@@ -380,27 +438,6 @@ const docTemplate = `{
                 },
                 "podAntiAffinity": {
                     "$ref": "#/definitions/charts.PodAntiAffinityConfig"
-                }
-            }
-        },
-        "charts.ApiError": {
-            "type": "object",
-            "properties": {
-                "detail": {
-                    "type": "string"
-                },
-                "error": {},
-                "instance": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "integer"
-                },
-                "title": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
                 }
             }
         },
@@ -1326,6 +1363,66 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "releases.ChartReleaseOptions": {
+            "type": "object",
+            "properties": {
+                "dependentHelmRepository": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/releases.DependentHelmRepository"
+                    }
+                },
+                "ociRegistryChartUrl": {
+                    "type": "string"
+                },
+                "ociRegistryHostname": {
+                    "type": "string"
+                },
+                "ociRegistryPassword": {
+                    "type": "string"
+                },
+                "ociRegistryUsername": {
+                    "type": "string"
+                },
+                "revisionSemVer": {
+                    "type": "string"
+                }
+            }
+        },
+        "releases.DependentHelmRepository": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "description": ": \"bedag\",",
+                    "type": "string"
+                },
+                "url": {
+                    "description": "\"https://bedag.github.io/helm-charts\",",
+                    "type": "string"
+                }
+            }
+        },
+        "utils.ApiError": {
+            "type": "object",
+            "properties": {
+                "detail": {
+                    "type": "string"
+                },
+                "error": {},
+                "instance": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
         }
     }
 }`
@@ -1333,7 +1430,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "alpha",
-	Host:             "localhost:8080",
+	Host:             "0.0.0.0:8090",
 	BasePath:         "/",
 	Schemes:          []string{"http"},
 	Title:            "Helm Architect Core API",

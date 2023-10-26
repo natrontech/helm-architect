@@ -6,7 +6,7 @@
 
 ## api docs
 
-go to [\[host\]/swagger/index.html](http://localhost:8080/swagger/index.html) to see swagger docs.
+go to [\[host\]/swagger/index.html](http://localhost:8090/swagger/index.html) to see swagger docs.
 
 ## installing and running
 

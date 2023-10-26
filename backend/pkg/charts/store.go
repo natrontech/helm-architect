@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/blang/semver/v4"
+	"github.com/natrontech/helmarchitect/backend/internal/utils"
 	"gopkg.in/yaml.v2"
 )
 
@@ -39,7 +40,7 @@ func NewChartStore() ChartStore {
 
 	store := new(FsChartStore)
 
-	store.BasePath = EnvOrPanic(CHART_BASE_ENV)
+	store.BasePath = utils.EnvOrPanic(CHART_BASE_ENV)
 
 	return store
 }
@@ -47,33 +48,33 @@ func NewChartStore() ChartStore {
 func (cs *FsChartStore) CreateChart(chart Chart) error {
 
 	chartPath := filepath.Join(cs.BasePath, chart.Name)
-	if FileExists(chartPath) {
+	if utils.FileExists(chartPath) {
 
 		return errors.New("chart " + chart.Name + " already exists")
 	}
 
-	return DirCreate(chartPath)
+	return utils.DirCreate(chartPath)
 }
 
 func (cs *FsChartStore) ReadAllCharts() []string {
 
-	return entriesNames(cs.BasePath)
+	return utils.EntriesNames(cs.BasePath)
 }
 
 func (cs *FsChartStore) DeleteChart(name string) error {
 
-	return DirDelete(filepath.Join(cs.BasePath, name))
+	return utils.DirDelete(filepath.Join(cs.BasePath, name))
 }
 
 func (cs *FsChartStore) CreateRevision(chartName string, revision Revision) (Revision, error) {
 
 	revisionPath := cs.revisionDirPath(chartName, revision.Version())
 
-	if FileExists(revisionPath) {
+	if utils.FileExists(revisionPath) {
 		return Revision{}, errors.New("revision " + revision.SemVer + " already exists")
 	}
 
-	err := DirCreate(revisionPath)
+	err := utils.DirCreate(revisionPath)
 	if err != nil {
 		return Revision{}, errors.New("failed creating revision")
 	}
@@ -83,11 +84,11 @@ func (cs *FsChartStore) CreateRevision(chartName string, revision Revision) (Rev
 	includesPath := filepath.Join(templatesPath, REVISION_INCLUDES_FILE_NAME)
 	valuesPath := filepath.Join(revisionPath, REVISION_VALUES_FILE_NAME)
 
-	err = DirCreate(templatesPath)
+	err = utils.DirCreate(templatesPath)
 	if err != nil {
 		return Revision{}, errors.New("charts template directory could not be written")
 	}
-	ok := FileWrite(chartPath, ChartYamlTemplate)
+	ok := utils.FileWrite(chartPath, ChartYamlTemplate)
 	if !ok {
 		return Revision{}, errors.New("chart.yaml could not be written")
 	}
@@ -95,8 +96,8 @@ func (cs *FsChartStore) CreateRevision(chartName string, revision Revision) (Rev
 		ChartName:       chartName,
 		SemanticVersion: revision.Version().String(),
 	}
-	ParseReplaceWrite(chartPath, vals)
-	ok = FileWrite(includesPath, IncludesTemplate)
+	utils.ParseReplaceWrite(chartPath, vals)
+	ok = utils.FileWrite(includesPath, IncludesTemplate)
 	if !ok {
 		return Revision{}, errors.New("includes.yaml could not be written")
 	}
@@ -113,12 +114,12 @@ func (cs *FsChartStore) ReadAllRevisions(chartName string) []string {
 
 	chartPath := filepath.Join(cs.BasePath, chartName)
 
-	ents, err := entries(chartPath)
+	ents, err := utils.Entries(chartPath)
 	if err != nil {
 		return make([]string, 0)
 	}
 
-	files := Filter(ents, func(e fs.DirEntry) bool {
+	files := utils.Filter(ents, func(e fs.DirEntry) bool {
 		if e.Type().IsDir() {
 			_, err := semver.Parse(e.Name())
 			if err != nil {
@@ -128,7 +129,7 @@ func (cs *FsChartStore) ReadAllRevisions(chartName string) []string {
 		return false
 	})
 
-	versions := Map(files, func(e fs.DirEntry) string {
+	versions := utils.Map(files, func(e fs.DirEntry) string {
 		v, _ := semver.Parse(e.Name())
 		return v.String()
 	})
@@ -141,7 +142,7 @@ func (cs *FsChartStore) ReadRevision(chartName string, v semver.Version) (Revisi
 	conf := new(Configuration)
 	valuesFiles := filepath.Join(cs.revisionDirPath(chartName, v), REVISION_VALUES_FILE_NAME)
 
-	if !FileExists(valuesFiles) {
+	if !utils.FileExists(valuesFiles) {
 		return Revision{}, errors.New("revision '" + v.String() + "' does not exist")
 	}
 
@@ -172,7 +173,7 @@ func (cs *FsChartStore) DeleteRevision(chartName string, revision Revision) erro
 		return err
 	}
 
-	return DirDelete(cs.revisionDirPath(chartName, v))
+	return utils.DirDelete(cs.revisionDirPath(chartName, v))
 }
 
 func (cs *FsChartStore) revisionDirPath(chartName string, v semver.Version) string {
@@ -182,7 +183,7 @@ func (cs *FsChartStore) revisionDirPath(chartName string, v semver.Version) stri
 
 func WriteYaml(path string, v interface{}) error {
 
-	ymlRdr, err := FileOpen(path, os.O_WRONLY|os.O_CREATE)
+	ymlRdr, err := utils.FileOpen(path, os.O_WRONLY|os.O_CREATE)
 	if err != nil {
 		return err
 	}
@@ -197,7 +198,7 @@ func WriteYaml(path string, v interface{}) error {
 
 func ReadYaml(path string, v interface{}) error {
 
-	ymlRdr, err := FileOpen(path, os.O_RDONLY)
+	ymlRdr, err := utils.FileOpen(path, os.O_RDONLY)
 	if err != nil {
 		return err
 	}
