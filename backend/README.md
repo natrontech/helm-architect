@@ -10,6 +10,6 @@ go to [\[host\]/swagger/index.html](http://localhost:8090/swagger/index.html) to
 
 ## installing and running
 
-install: ```make build```
+Running on you machine: ```make clean-run```
 
-run: ```make run```
+Running using Docker: ```make docker-run-local```
