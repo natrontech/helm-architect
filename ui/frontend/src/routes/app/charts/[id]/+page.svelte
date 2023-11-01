@@ -6,6 +6,7 @@
   import Toolbar from "$lib/components/canvas/drawer/Toolbar.svelte";
   import { Button } from "flowbite-svelte";
   import type { ComponentType } from "svelte";
+    import { randomId } from "$lib/utils/id";
 
   // Toolbar props
   let width = 0;
@@ -116,7 +117,7 @@
         nodes.push({
           ...nodeConfig,
           useDefaults: true,
-          id: `${nodeConfig.id}-${nodes.length}`,
+          id: randomId(),
         });
         nodes = [...nodes];
         dropped_in = false;
