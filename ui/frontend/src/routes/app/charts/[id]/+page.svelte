@@ -113,13 +113,12 @@
 
       // Additional logic to handle dropping into the dropzone
       if (dropped_in) {
-        nodes = [
-          ...nodes,
-          {
-            ...nodeConfig,
-            useDefaults: true
-          }
-        ];
+        nodes.push({
+          ...nodeConfig,
+          useDefaults: true,
+          id: `${nodeConfig.id}-${nodes.length}`,
+        });
+        nodes = [...nodes];
         dropped_in = false;
       }
     }
@@ -136,19 +135,23 @@
   }
 
   const handleDragEnter = (): void => {
-    console.log("drag enter");
     if (!dropped_in) dropped_in = true;
   };
   const handleDragLeave = (): void => {
-    console.log("drag leave");
     if (dropped_in) dropped_in = false;
   };
-
   let selectedNodeIndex: number | null = null;
   function selectNode(index: number) {
     console.log("select node", index);
     selectedNodeIndex = index;
   }
+
+  const deleteNode = (index: number) => {
+    // delete node from nodes array
+    nodes.splice(index, 1);
+    nodes = [...nodes];
+  };
+
 </script>
 
 <div class="h-full w-full">
@@ -163,7 +166,7 @@
     on:mouseleave={handleDragLeave}
   >
     <Svelvet id="lowcode" {...svelvetProps}>
-      {#each nodes as { ...nodeProps }, idx}
+      {#each nodes as { ...nodeProps }, idx (nodeProps.id)}
         <Node {...nodeProps} drop="cursor" dynamic={true} on:nodeClicked={() => selectNode(idx)}>
           <div
             class="node flex flex-col justify-center items-center cursor-auto select-none draggable z-20 p-2"
@@ -172,10 +175,7 @@
             <Button
               class="absolute top-1 right-1 !p-2"
               size="xs"
-              on:click={() => (
-                // remove node from nodes array without mutating the array
-                nodes = nodes.filter((_, i) => i !== idx)
-              )}
+              on:click={() => deleteNode(idx)}
             >
               <Trash class="w-5 h-5" strokeWidth={2} />
             </Button>
