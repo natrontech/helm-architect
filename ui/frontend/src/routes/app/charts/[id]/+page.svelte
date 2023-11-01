@@ -4,7 +4,6 @@
   import type { XYPair, EdgeStyle, NodeConfig, SvelvetConfig } from "svelvet";
   import { Anchor, Node, Svelvet } from "svelvet";
   import Toolbar from "$lib/components/canvas/drawer/Toolbar.svelte";
-  import LayoutNode from "$lib/components/canvas/nodes/LayoutNode.svelte";
   import { Button } from "flowbite-svelte";
   import type { ComponentType } from "svelte";
 
