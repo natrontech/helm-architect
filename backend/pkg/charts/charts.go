@@ -70,7 +70,7 @@ func revisions(c *gin.Context) {
 //	@Produce		json
 //	@Param			name				path		string				true	"name of the chart"
 //	@Param			semanticVersion		path		string				true	"version of the revision"
-//	@Success		200		{array}		string
+//	@Success		200		{object}	Configuration
 //	@Failure		400		{object}	utils.ApiError
 //	@Failure		404		{object}	utils.ApiError
 //	@Failure		500		{object}	utils.ApiError
@@ -203,14 +203,15 @@ func createChart(c *gin.Context) {
 
 // deleteChart will delete a chart. Be aware that this will also delete all revisions.
 //
-//	@Summary		deletes a chart and all its revisions.
-//	@Tags			charts
-//	@Produce		json
-//	@Success		200
-//	@Failure		400		{object}	utils.ApiError
-//	@Failure		404		{object}	utils.ApiError
-//	@Failure		500		{object}	utils.ApiError
-//	@Router			/api/alpha/chart/{name} [delete]
+//		@Summary		deletes a chart and all its revisions.
+//		@Tags			charts
+//		@Produce		json
+//	     @Param                  name                            path            string                          true    "name of the chart"
+//		@Success		200
+//		@Failure		400		{object}	utils.ApiError
+//		@Failure		404		{object}	utils.ApiError
+//		@Failure		500		{object}	utils.ApiError
+//		@Router			/api/alpha/chart/{name} [delete]
 func deleteChart(c *gin.Context) {
 
 	chartName := c.Param("name")

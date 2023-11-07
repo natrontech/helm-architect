@@ -76,6 +76,15 @@ const docTemplate = `{
                     "charts"
                 ],
                 "summary": "deletes a chart and all its revisions.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "name of the chart",
+                        "name": "name",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -191,10 +200,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/charts.Configuration"
                         }
                     },
                     "400": {

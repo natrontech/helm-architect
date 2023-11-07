@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { charts } from '$lib/stores/data';
+  import { chartNames } from '$lib/stores/helmarchitect';
   import { Layers3, Rocket } from 'lucide-svelte';
 </script>
 
@@ -10,7 +10,7 @@
       <Layers3 class="inline-block w-8 h-8 stroke-current" />
     </div>
     <div class="stat-title">Charts</div>
-    <div class="stat-value">{$charts.length}</div>
+    <div class="stat-value">{$chartNames.length}</div>
     <div class="stat-desc">Total</div>
   </div>
 
