@@ -123,10 +123,10 @@ func (cs *FsChartStore) ReadAllRevisions(chartName string) []string {
 		if e.Type().IsDir() {
 			_, err := semver.Parse(e.Name())
 			if err != nil {
-				return true
+				return false
 			}
 		}
-		return false
+		return true
 	})
 
 	versions := utils.Map(files, func(e fs.DirEntry) string {

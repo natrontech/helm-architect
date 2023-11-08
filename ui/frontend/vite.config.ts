@@ -23,7 +23,7 @@ const config: UserConfig = {
         headers: {
             "Cross-Origin-Embedder-Policy": "require-corp",
             "Cross-Origin-Opener-Policy": "same-origin"
-        }
+        }   
     }
 };
 

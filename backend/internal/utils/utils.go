@@ -40,7 +40,7 @@ func Filter[I any](inputs []I, predicate func(I) bool) []I {
 	output := make([]I, 0)
 	for _, i := range inputs {
 		if predicate(i) {
-			output = append(output)
+			output = append(output, i)
 		}
 	}
 	return output

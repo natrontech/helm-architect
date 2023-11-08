@@ -1,0 +1,26 @@
+version: '3.8'
+
+# include:
+#   - docker-compose-authentik.yaml
+#   - docker-compose-harbor.yaml
+
+services:
+  helm-architect-backend:
+    build:
+      context: ./../../backend
+      dockerfile: ./../../Dockerfile
+    env_file:
+      - ./../../backend/.env
+    #depends_on:
+     # - harbor-nginx
+      #- authentik-server
+    
+  helm-architect-frontend:
+    build:
+      context: ./../../ui/frontend
+      dockerfile: Dockerfile
+    env_file:
+      - ./../../ui/frontend/.env
+    depends_on:
+      - helm-architect-backend
+      #- authentik-server
