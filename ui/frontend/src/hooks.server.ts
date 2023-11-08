@@ -6,6 +6,7 @@ import { OAUTH2_ISSUER_URL, OAUTH2_AUTHORIZATION_URL, OAUTH2_CLIENT_ID, OAUTH2_C
 import { authentikAccessToken } from "$lib/stores/token.server"
 
 const svelteKitAuth : SvelteKitAuthConfig = {
+  trustHost: true,
   providers: [
     Authentik({
         clientId: OAUTH2_CLIENT_ID,

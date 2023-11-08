@@ -58,3 +58,5 @@ jobs:
         run: npm install --legacy-peer-deps
       - name: Build
         run: npm run build
+        env:
+          PUBLIC_LOGIN_CALLBACK: ""
