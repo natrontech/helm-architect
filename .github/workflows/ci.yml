@@ -60,3 +60,10 @@ jobs:
         run: npm run build
         env:
           PUBLIC_LOGIN_CALLBACK: ""
+          OAUTH2_WELLKNOWN_CONFIGURATION_URL: ""
+          OAUTH2_ISSUER_URL: ""
+          OAUTH2_AUTHORIZATION_URL: ""
+          OAUTH2_CLIENT_ID: ""
+          OAUTH2_CLIENT_SECRET: ""
+          AUTH_SECRET=: ""
+          HELM_ARCHITECT_BACKEND: ""
