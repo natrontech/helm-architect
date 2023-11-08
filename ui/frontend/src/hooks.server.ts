@@ -1,9 +1,9 @@
-import { SvelteKitAuth, getSession, type SvelteKitAuthConfig } from "@auth/sveltekit"
+import { SvelteKitAuth, type SvelteKitAuthConfig } from "@auth/sveltekit"
 import Authentik from "@auth/core/providers/authentik"
-import { redirect, type Handle, type RequestEvent, type ResolveOptions } from "@sveltejs/kit"
+import { redirect, type Handle } from "@sveltejs/kit"
 import { sequence } from "@sveltejs/kit/hooks"
 import { OAUTH2_ISSUER_URL, OAUTH2_AUTHORIZATION_URL, OAUTH2_CLIENT_ID, OAUTH2_CLIENT_SECRET } from "$env/static/private"
-import { getToken } from "@auth/core/jwt"
+import { authentikAccessToken } from "$lib/stores/token.server"
 
 const svelteKitAuth : SvelteKitAuthConfig = {
   providers: [
@@ -11,36 +11,26 @@ const svelteKitAuth : SvelteKitAuthConfig = {
         clientId: OAUTH2_CLIENT_ID,
         clientSecret: OAUTH2_CLIENT_SECRET,
         issuer: OAUTH2_ISSUER_URL,
-        authorization: OAUTH2_AUTHORIZATION_URL // necessary in order to define scope
+        authorization: OAUTH2_AUTHORIZATION_URL, // necessary in order to define scope
     })
   ],
   callbacks: {
-    // async signIn({ user, account, profile, email, credentials }) {
-    //   return true
-    // },
-    // async redirect({ url, baseUrl }) {
-    //   return baseUrl
-    // },
-    async session({ session, user, token }) {
-      if (user) {
-        console.log("(SESSION) USER: " + JSON.stringify(user))
-      }
+    async session({ session, token, user }) {
       if (token) {
-        console.log("(SESSION) TOKEN: " + JSON.stringify(token))
-        session.accessToken = token.accessToken
+        // session is called after the jwt callback and the accessToken must be set in the session to be available later
+        // leaving the following commented line here for documentation
+        // session.accessToken = token.accessToken // this might be dangerous because session is accessible in client-side code
+        authentikAccessToken.set(token.accessToken) // this writable is placed in a server only file -> no exposure to client facing code.
+      }
+      if (user) {
+        session.user = user
       }
       return session
     },
-    async jwt({ token, user, account, profile, isNewUser }) {
-      console.log("(JWT) TOKEN: " + JSON.stringify(token))
-      if (user) {
-        console.log("(JWT) USER: " + JSON.stringify(user))
-      }
+    async jwt({ token, account, }) {
+      //console.log("(JWT) TOKEN: " + JSON.stringify(token))
       if (account) {
-        console.log("(JWT) USER: " + JSON.stringify(account))
-      }
-      if (profile) {
-        console.log("(JWT) USER: " + JSON.stringify(profile))
+        token.accessToken = account.access_token
       }
       return token
     }
@@ -50,32 +40,20 @@ const svelteKitAuth : SvelteKitAuthConfig = {
 /** @type {import('@sveltejs/kit').Handle} */
 export const handle : Handle = sequence(
   SvelteKitAuth(svelteKitAuth),
-  logger,
   authorization
 )
 
-async function logger({ event, resolve }) {
-
-  console.log("-----------------------------------------------------------------------------")
-  console.log("EVENT: " + JSON.stringify(event))
-  const session = event.locals.getSession()
-  console.log("SESSION: " + JSON.stringify(session))
-  console.log("-----------------------------------------------------------------------------")
-
-  return resolve(event) 
-}
-
 async function authorization({ event, resolve }) {
 
-  // Protect any routes under /app
-  if (!event.url.pathname.startsWith("/login2")) {
-    const session = await event.locals.getSession()
-    if (!session) {
-      throw redirect(303, "/login2")
+  // currently its enough to just check if we have a session (are logged in)
+  // in the future we might check more stuff (like roles etc.)
+  const session = await event.locals.getSession()
+  if (!session) {
+    if (event.route.id !== '/login') {
+      throw redirect(303, "/login")
     }
   }
 
-  // If the request is still here, just proceed as normally
   return resolve(event) 
 }
 
