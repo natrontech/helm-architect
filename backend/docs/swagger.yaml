@@ -692,6 +692,12 @@ paths:
       - charts
   /api/alpha/chart/{name}:
     delete:
+      parameters:
+      - description: name of the chart
+        in: path
+        name: name
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -807,9 +813,7 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              type: string
-            type: array
+            $ref: '#/definitions/charts.Configuration'
         "400":
           description: Bad Request
           schema:

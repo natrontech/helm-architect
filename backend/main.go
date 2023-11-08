@@ -39,6 +39,7 @@ func main() {
 
 	corsCfg := cors.DefaultConfig()
 	corsCfg.AllowAllOrigins = true
+	corsCfg.AllowHeaders = append(corsCfg.AllowHeaders, "x-requested-with")
 	server.Use(cors.New(corsCfg))
 
 	auth.RegisterUserRoutes(server)
