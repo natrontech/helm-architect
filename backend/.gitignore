@@ -1,5 +1,12 @@
+<<<<<<< HEAD
 .env
 .env.*
 !.env.example
 
 backend
+=======
+
+.env
+.env.*
+!.env.example
+>>>>>>> origin/main

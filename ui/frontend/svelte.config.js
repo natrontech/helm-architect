@@ -1,5 +1,5 @@
 // import adapter from '@sveltejs/adapter-node';
-import adapter from "@sveltejs/adapter-static";
+import adapter from "@sveltejs/adapter-node";
 import { vitePreprocess } from "@sveltejs/kit/vite";
 import preprocess from "svelte-preprocess";
 
@@ -17,11 +17,7 @@ const config = {
         alias: {
             $lib: "src/lib"
         },
-        adapter: adapter({
-            // Prerendering turned off. Turn it on if you know what you're doing.
-            prerender: { entries: [] },
-            fallback: "index.html" // enable SPA mode
-        }),
+        adapter: adapter(),
         csrf: {
             checkOrigin: false
         }

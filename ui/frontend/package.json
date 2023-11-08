@@ -52,6 +52,8 @@
   },
   "type": "module",
   "dependencies": {
+    "@auth/core": "^0.18.0",
+    "@auth/sveltekit": "^0.3.11",
     "@floating-ui/dom": "^1.2.8",
     "@openapitools/openapi-generator-cli": "^2.7.0",
     "@picocss/pico": "^1.5.10",

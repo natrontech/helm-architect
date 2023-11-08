@@ -1,12 +1,12 @@
 services:
-  registry:
+  harbor-registry:
     image: docker.io/bitnami/harbor-registry:2
     environment:
       - REGISTRY_HTTP_SECRET=CHANGEME
     volumes:
       - registry_data:/storage
       - ./config/registry/:/etc/registry/:ro
-  registryctl:
+  harbor-registryctl:
     image: docker.io/bitnami/harbor-registryctl:2
     environment:
       - CORE_SECRET=CHANGEME
@@ -16,7 +16,7 @@ services:
       - registry_data:/storage
       - ./config/registry/:/etc/registry/:ro
       - ./config/registryctl/config.yml:/etc/registryctl/config.yml:ro
-  postgresql:
+  harbor-postgresql:
     image: docker.io/bitnami/postgresql:13
     container_name: harbor-db
     environment:
@@ -24,11 +24,11 @@ services:
       - POSTGRESQL_DATABASE=registry
     volumes:
       - postgresql_data:/bitnami/postgresql
-  core:
+  harbor-core:
     image: docker.io/bitnami/harbor-core:2
     container_name: harbor-core
     depends_on:
-      - registry
+      - harbor-registry
     environment:
       - CORE_KEY=change-this-key
       - _REDIS_URL_CORE=redis://redis:6379/0
@@ -66,19 +66,19 @@ services:
     expose:
       - "5000"
       - "8080"
-  portal:
+  harbor-portal:
     image: docker.io/bitnami/harbor-portal:2
     container_name: harbor-portal
     depends_on:
-      - core
+      - harbor-core
     expose:
       - "8080"
-  jobservice:
+  harbor-jobservice:
     image: docker.io/bitnami/harbor-jobservice:2
     container_name: harbor-jobservice
     depends_on:
-      - redis
-      - core
+      - harbor-redis
+      - harbor-core
     environment:
       - CORE_SECRET=CHANGEME
       - JOBSERVICE_SECRET=CHANGEME
@@ -89,7 +89,7 @@ services:
     volumes:
       - jobservice_data:/var/log/jobs
       - ./config/jobservice/config.yml:/etc/jobservice/config.yml:ro
-  redis:
+  harbor-redis:
     image: docker.io/bitnami/redis:7.0
     environment:
       # ALLOW_EMPTY_PASSWORD is recommended only for development.
@@ -102,10 +102,10 @@ services:
     ports:
       - '80:8080'
     depends_on:
-      - postgresql
-      - registry
-      - core
-      - portal
+      - harbor-postgresql
+      - harbor-registry
+      - harbor-core
+      - harbor-portal
 volumes:
   registry_data:
     driver: local
