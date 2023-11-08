@@ -50,6 +50,8 @@
   },
   "type": "module",
   "dependencies": {
+    "@auth/core": "^0.18.0",
+    "@auth/sveltekit": "^0.3.11",
     "@floating-ui/dom": "^1.2.8",
     "@picocss/pico": "^1.5.10",
     "@sveltejs/adapter-node": "^1.2.1",

@@ -7,6 +7,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/natrontech/helmarchitect/backend/internal/utils"
+	"github.com/natrontech/helmarchitect/backend/pkg/auth"
 	"github.com/natrontech/helmarchitect/backend/pkg/charts"
 	"github.com/natrontech/helmarchitect/backend/pkg/releases"
 
@@ -40,6 +41,7 @@ func main() {
 	corsCfg.AllowAllOrigins = true
 	server.Use(cors.New(corsCfg))
 
+	auth.RegisterUserRoutes(server)
 	charts.RegisterChartRoutes(server)
 	releases.RegisterChartRoutes(server)
 
@@ -51,6 +53,18 @@ func main() {
 func checkEnv() error {
 
 	if _, err := utils.EnvOrError(charts.CHART_BASE_ENV); err != nil {
+		return err
+	}
+
+	if _, err := utils.EnvOrError(auth.OIDC_URL); err != nil {
+		return err
+	}
+
+	if _, err := utils.EnvOrError(auth.OIDC_CLIENT_ID); err != nil {
+		return err
+	}
+
+	if _, err := utils.EnvOrError(auth.OIDC_CLIENT_SECRET); err != nil {
 		return err
 	}
 

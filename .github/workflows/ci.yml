@@ -58,3 +58,12 @@ jobs:
         run: npm install --legacy-peer-deps
       - name: Build
         run: npm run build
+        env:
+          PUBLIC_LOGIN_CALLBACK: "https://dummy.xyz/"
+          OAUTH2_WELLKNOWN_CONFIGURATION_URL: "https://dummy.xyz/"
+          OAUTH2_ISSUER_URL: "https://dummy.xyz/"
+          OAUTH2_AUTHORIZATION_URL: "https://dummy.xyz/"
+          OAUTH2_CLIENT_ID: "dummy"
+          OAUTH2_CLIENT_SECRET: "dummy"
+          AUTH_SECRET=: "dummy"
+          HELM_ARCHITECT_BACKEND: "https://dummy.xyz/"

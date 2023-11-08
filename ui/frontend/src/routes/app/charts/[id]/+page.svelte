@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Boxes, Trash } from "lucide-svelte";
+  import { Trash } from "lucide-svelte";
   import colorTheme from "$lib/stores/theme";
-  import type { XYPair, EdgeStyle, NodeConfig, SvelvetConfig } from "svelvet";
-  import { Anchor, Node, Svelvet } from "svelvet";
-  import Toolbar from "$lib/components/canvas/drawer/ToolBar.svelte";
+  import type { XYPair, EdgeStyle, NodeConfig } from "svelvet";
+  import { Node, Svelvet } from "svelvet";
+  import Toolbar from "$lib/components/canvas/drawer/Toolbar.svelte";
   import { Button } from "flowbite-svelte";
   import type { ComponentType } from "svelte";
 
