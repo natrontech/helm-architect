@@ -2,11 +2,12 @@
   import { Trash } from "lucide-svelte";
   import colorTheme from "$lib/stores/theme";
   import type { XYPair, EdgeStyle, NodeConfig } from "svelvet";
-  import { Node, Svelvet } from "svelvet";
+  import { Svelvet } from "svelvet";
   import Toolbar from "$lib/components/canvas/drawer/Toolbar.svelte";
-  import { Button } from "flowbite-svelte";
   import type { ComponentType } from "svelte";
-
+  import { randomId } from "$lib/utils/id";
+  import ComponentNode from "$lib/components/canvas/nodes/ComponentNode.svelte";
+  
   // Toolbar props
   let width = 0;
   let height = 0;
@@ -53,7 +54,13 @@
     toggle
   };
 
+  interface NodeConnection {
+    source: NodeConfig
+    target: NodeConfig
+  }
+
   let nodes: NodeConfig[] = [];
+  let nodeConnections: NodeConnection[] = [];
   let dropped_in = false;
 
   // Toolbar functions
@@ -113,13 +120,12 @@
 
       // Additional logic to handle dropping into the dropzone
       if (dropped_in) {
-        nodes = [
-          ...nodes,
-          {
-            ...nodeConfig,
-            useDefaults: true
-          }
-        ];
+        nodes.push({
+          ...nodeConfig,
+          useDefaults: true,
+          id: randomId()
+        });
+        nodes = [...nodes];
         dropped_in = false;
       }
     }
@@ -136,19 +142,25 @@
   }
 
   const handleDragEnter = (): void => {
-    console.log("drag enter");
     if (!dropped_in) dropped_in = true;
   };
   const handleDragLeave = (): void => {
-    console.log("drag leave");
     if (dropped_in) dropped_in = false;
   };
-
   let selectedNodeIndex: number | null = null;
   function selectNode(index: number) {
-    console.log("select node", index);
     selectedNodeIndex = index;
   }
+  const addConnection = (sourceNode: NodeConfig, targetNode: NodeConfig) => {
+    // add connection to connections array
+    nodeConnections.push({ source: sourceNode, target: targetNode });
+    nodeConnections = [...nodeConnections];
+  };
+  const deleteNode = (index: number) => {
+    // delete node from nodes array
+    nodes.splice(index, 1);
+    nodes = [...nodes];
+  };
 </script>
 
 <div class="h-full w-full">
@@ -163,24 +175,15 @@
     on:mouseleave={handleDragLeave}
   >
     <Svelvet id="lowcode" {...svelvetProps}>
-      {#each nodes as { ...nodeProps }, idx}
-        <Node {...nodeProps} drop="cursor" dynamic={true} on:nodeClicked={() => selectNode(idx)}>
-          <div
-            class="node flex flex-col justify-center items-center cursor-auto select-none draggable z-20 p-2"
-          >
-            <h1 class="text-2xl font-bold pr-10">{nodeProps.label}</h1>
-            <Button
-              class="absolute top-1 right-1 !p-2"
-              size="xs"
-              on:click={() => (
-                // remove node from nodes array without mutating the array
-                nodes = nodes.filter((_, i) => i !== idx)
-              )}
-            >
-              <Trash class="w-5 h-5" strokeWidth={2} />
-            </Button>
-          </div>
-        </Node>
+      {#each nodes as { ...nodeProps }, idx (nodeProps.id)}
+        <ComponentNode
+          {nodeProps}
+          {idx}
+          {selectNode}
+          {addConnection}
+          {deleteNode}
+          isSelected={idx === selectedNodeIndex}
+        />
       {/each}
     </Svelvet>
   </div>
