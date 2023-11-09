@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { Trash } from "lucide-svelte";
   import colorTheme from "$lib/stores/theme";
   import type { XYPair, EdgeStyle, NodeConfig } from "svelvet";
   import { Svelvet } from "svelvet";

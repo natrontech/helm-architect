@@ -1,8 +1,11 @@
-import { Configuration, type ChartsChart, type ConfigurationParameters, ChartsApi, type ChartsConfiguration } from "$lib/generated/helm-architect-client";
+import { Configuration, type ChartsChart, type ConfigurationParameters, ChartsApi, type ChartsConfiguration, type UtilsApiError } from "$lib/generated/helm-architect-client";
 import { writable, type Readable, type Writable, derived } from "svelte/store";
+import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 const chartsApi : ChartsApi = new ChartsApi(new Configuration({} satisfies ConfigurationParameters))
+
+export const storeError: Subject<UtilsApiError> = new Subject();
 
 export interface ChartNameAndRevisionToConfiguration {
     name: string
@@ -18,11 +21,19 @@ export const chartRevisions: Readable<Map<string, string[]>> = derived(chartRevs
 
 export const charts: Writable<ChartNameAndRevisionToConfiguration[]> = writable<ChartNameAndRevisionToConfiguration[]>([])
 
+chartNamesInternal.subscribe(names => updateRevisions(names))
+chartRevsisionsInternal.subscribe(chartsToRevisions => updateCharts(chartsToRevisions))
+
 export function updateHelmArchitectStores() {
 
-    chartNamesInternal.subscribe(names => updateRevisions(names))
-    chartRevsisionsInternal.subscribe(chartsToRevisions => updateCharts(chartsToRevisions))
     updateChartNames()
+}
+
+export function addChartRevision(cnc : ChartNameAndRevisionToConfiguration) {
+
+    chartsApi.apiAlphaChartNameRevisionPost({ name: cnc.name, revision: { semanticVersionString: cnc.semver, configuration: cnc.configuration } })
+        .pipe(take(1))
+        .subscribe({ next: () => { updateHelmArchitectStores() }, error: err => { storeError.next(err.body) }})
 }
 
 function updateChartNames() {
