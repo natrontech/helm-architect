@@ -1,12 +1,11 @@
 <script lang="ts">
-  import { Boxes, Trash } from "lucide-svelte";
   import colorTheme from "$lib/stores/theme";
-  import type { XYPair, EdgeStyle, NodeConfig, SvelvetConfig } from "svelvet";
-  import { Anchor, Node, Svelvet } from "svelvet";
-  import Toolbar from "$lib/components/canvas/drawer/ToolBar.svelte";
-  import { Button } from "flowbite-svelte";
+  import type { XYPair, EdgeStyle, NodeConfig, Connections } from "svelvet";
+  import { Svelvet } from "svelvet";
   import type { ComponentType } from "svelte";
-    import { randomId } from "$lib/utils/id";
+  import { randomId } from "$lib/utils/id";
+  import ComponentNode from "$lib/components/canvas/nodes/ComponentNode.svelte";
+  import ToolBar from "$lib/components/canvas/drawer/ToolBar.svelte";
 
   // Toolbar props
   let width = 0;
@@ -54,7 +53,13 @@
     toggle
   };
 
+  interface NodeConnection {
+    source: NodeConfig
+    target: NodeConfig
+  }
+
   let nodes: NodeConfig[] = [];
+  let nodeConnections: NodeConnection[] = [];
   let dropped_in = false;
 
   // Toolbar functions
@@ -117,7 +122,7 @@
         nodes.push({
           ...nodeConfig,
           useDefaults: true,
-          id: randomId(),
+          id: randomId()
         });
         nodes = [...nodes];
         dropped_in = false;
@@ -143,21 +148,23 @@
   };
   let selectedNodeIndex: number | null = null;
   function selectNode(index: number) {
-    console.log("select node", index);
     selectedNodeIndex = index;
   }
-
+  const addConnection = (sourceNode: NodeConfig, targetNode: NodeConfig) => {
+    // add connection to connections array
+    nodeConnections.push({ source: sourceNode, target: targetNode });
+    nodeConnections = [...nodeConnections];
+  };
   const deleteNode = (index: number) => {
     // delete node from nodes array
     nodes.splice(index, 1);
     nodes = [...nodes];
   };
-
 </script>
 
 <div class="h-full w-full">
   <!-- Toolbar Component -->
-  <Toolbar {dragCopy} />
+  <ToolBar {dragCopy} />
 
   <!-- Dropzone Component -->
   <div
@@ -168,20 +175,14 @@
   >
     <Svelvet id="lowcode" {...svelvetProps}>
       {#each nodes as { ...nodeProps }, idx (nodeProps.id)}
-        <Node {...nodeProps} drop="cursor" dynamic={true} on:nodeClicked={() => selectNode(idx)}>
-          <div
-            class="node flex flex-col justify-center items-center cursor-auto select-none draggable z-20 p-2"
-          >
-            <h1 class="text-2xl font-bold pr-10">{nodeProps.label}</h1>
-            <Button
-              class="absolute top-1 right-1 !p-2"
-              size="xs"
-              on:click={() => deleteNode(idx)}
-            >
-              <Trash class="w-5 h-5" strokeWidth={2} />
-            </Button>
-          </div>
-        </Node>
+        <ComponentNode
+          {nodeProps}
+          {idx}
+          {selectNode}
+          {addConnection}
+          {deleteNode}
+          isSelected={idx === selectedNodeIndex}
+        />
       {/each}
     </Svelvet>
   </div>
