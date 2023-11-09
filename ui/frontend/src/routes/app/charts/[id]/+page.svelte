@@ -7,7 +7,7 @@
   import type { ComponentType } from "svelte";
   import { randomId } from "$lib/utils/id";
   import ComponentNode from "$lib/components/canvas/nodes/ComponentNode.svelte";
-
+  
   // Toolbar props
   let width = 0;
   let height = 0;
