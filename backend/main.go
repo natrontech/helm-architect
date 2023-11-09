@@ -37,12 +37,15 @@ func main() {
 
 	server := gin.Default()
 
+	// Cross Origin Resource Sharing
 	corsCfg := cors.DefaultConfig()
 	corsCfg.AllowAllOrigins = true
-	corsCfg.AllowHeaders = append(corsCfg.AllowHeaders, "x-requested-with")
+	corsCfg.AllowHeaders = append(corsCfg.AllowHeaders, "x-requested-with") // x-requested-with is required by the client of the frontend
 	server.Use(cors.New(corsCfg))
 
-	auth.RegisterUserRoutes(server)
+	// Authenticate and Authorize requests
+	server.Use(auth.Authenticated(auth.DefaultAuthConfig()))
+
 	charts.RegisterChartRoutes(server)
 	releases.RegisterChartRoutes(server)
 
@@ -57,15 +60,7 @@ func checkEnv() error {
 		return err
 	}
 
-	if _, err := utils.EnvOrError(auth.OIDC_URL); err != nil {
-		return err
-	}
-
-	if _, err := utils.EnvOrError(auth.OIDC_CLIENT_ID); err != nil {
-		return err
-	}
-
-	if _, err := utils.EnvOrError(auth.OIDC_CLIENT_SECRET); err != nil {
+	if _, err := utils.EnvOrError(auth.JWT_CERTIFICATE); err != nil {
 		return err
 	}
 
