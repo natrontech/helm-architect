@@ -1,130 +1,110 @@
 package auth
 
 import (
-	"context"
+	"crypto/x509"
+	"encoding/pem"
 	"errors"
+	"fmt"
 	"net/http"
+	"os"
+	"strings"
 
-	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/gin-gonic/gin"
-	"golang.org/x/oauth2"
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/natrontech/helmarchitect/backend/internal/utils"
 )
 
-const OIDC_URL = "HELM_ARCHITECT_OIDC_URL"
-const OIDC_CLIENT_ID = "HELM_ARCHITECT_OIDC_CLIENT_ID"
-const OIDC_CLIENT_SECRET = "HELM_ARCHITECT_OIDC_CLIENT_SECRET"
+const JWT_CERTIFICATE = "HELM_ARCHITECT_JWT_CERTIFICATE"
 
-type AuthProvider interface {
-	// Authorize is to be called by the callback in the authorization flow
-	Authorize(*http.Response) (*oauth2.Token, error)
-	Token() error
-	UserInfo() error
-	Verify(*oauth2.Token) bool
+const AUTHORIZATION_HEADER = "Authorization"
+const AUTHORIZATION_SCHEME = "Bearer"
+
+var jwtParser = jwt.NewParser()
+
+type Config interface {
+	CertificatePath() string
+	Certificate(string) *x509.Certificate
 }
 
-type OIDProvider struct {
-	AuthProvider
+type defaultConfig struct {
+	Config
 
-	authProviderCfg *AuthProviderConfig
-	oauthCfg        *oauth2.Config
-	provider        *oidc.Provider
+	certificate *x509.Certificate
 }
 
-type AuthProviderConfig struct {
-	Ctx          context.Context
-	ProviderUrl  string
-	ClientId     string
-	ClientSecret string
-	RedirectUrl  string
+func (cfg *defaultConfig) CertificatePath() string {
+
+	return os.Getenv(JWT_CERTIFICATE)
 }
 
-func NewAuthProvider(cfg *AuthProviderConfig) (AuthProvider, error) {
+func (cfg *defaultConfig) Certificate(certificatePath string) *x509.Certificate {
 
-	oidcProvider, err := oidc.NewProvider(cfg.Ctx, cfg.ProviderUrl)
-	if err != nil {
-		return nil, err
+	if certificatePath != "" {
+		if c, err := utils.FileOpen(certificatePath, os.O_RDONLY); err == nil {
+			if stat, err := c.Stat(); err == nil {
+				fileSize := stat.Size()
+				bytes := make([]byte, fileSize)
+				if n, err := c.Read(bytes); err == nil && n == int(fileSize) {
+					if pemBlock, _ := pem.Decode(bytes); pemBlock != nil {
+						if certificate, err := x509.ParseCertificate(pemBlock.Bytes); err == nil {
+							cfg.certificate = certificate
+							return certificate
+						} else {
+							fmt.Println(err.Error())
+						}
+					} else {
+						fmt.Println(err.Error())
+					}
+				} else {
+					fmt.Println(err.Error())
+				}
+			} else {
+				fmt.Println(err.Error())
+			}
+		} else {
+			fmt.Println(err.Error())
+		}
 	}
 
-	provider := new(OIDProvider)
-	provider.provider = oidcProvider
-	provider.authProviderCfg = cfg
-
-	return provider, nil
+	panic("unable to read jwt certificate")
 }
 
-func newAuthConfig(clientId string, clientSecret string, redirectUrl string, provider *oidc.Provider) *oauth2.Config {
+func DefaultAuthConfig() Config {
 
-	cfg := new(oauth2.Config)
-	cfg.ClientID = clientId
-	cfg.ClientSecret = clientSecret
-	cfg.RedirectURL = redirectUrl
-	cfg.Endpoint = provider.Endpoint()
-	cfg.Scopes = []string{oidc.ScopeOpenID, "email", "profile", "groups"}
-
-	return cfg
+	return new(defaultConfig)
 }
 
-func RegisterUserRoutes(e *gin.Engine) {
+func Authenticated(cfg Config) gin.HandlerFunc {
 
-	e.GET("/api/alpha/login", login)
-}
+	return func(c *gin.Context) {
 
-// createRevision creates a new revision of the chart
-//
-//	@Summary		create a new revision of the chart
-//	@Tags			charts
-//	@Accept			json
-//	@Produce		json
-//	@Param			name		path		string				true	"name of the chart"
-//	@Param 			Revision 	body 		Revision 			true	"revision object to be created"
-//	@Success		200		{object}	Revision
-//	@Failure		400		{object}	utils.ApiError
-//	@Failure		404		{object}	utils.ApiError
-//	@Failure		500		{object}	utils.ApiError
-//	@Router			/api/alpha/chart/{name}/revision [post]
-func login(c *gin.Context) {
+		if authorization := c.Request.Header.Get(AUTHORIZATION_HEADER); authorization != "" {
 
-}
+			if !strings.HasPrefix(authorization, AUTHORIZATION_SCHEME) {
+				c.AbortWithError(http.StatusUnauthorized, utils.NewApiError(errors.New("expected bearer scheme"), http.StatusUnauthorized, c, "TRACE-ID"))
+				return
+			}
 
-func (provider *OIDProvider) Authorize(response *http.Response) (*oauth2.Token, error) {
+			cert := cfg.Certificate(cfg.CertificatePath())
+			accessToken := strings.Trim(strings.Split(authorization, AUTHORIZATION_SCHEME)[1], " ")
+			token, err := jwtParser.Parse(accessToken, func(t *jwt.Token) (interface{}, error) { return cert.PublicKey, nil })
+			if err != nil {
+				c.AbortWithError(http.StatusUnauthorized, utils.NewApiError(err, http.StatusUnauthorized, c, "TRACE-ID"))
+				return
+			}
 
-	t, err := provider.oauthCfg.Exchange(provider.authProviderCfg.Ctx, response.Request.URL.Query().Get("code"))
-	if err != nil {
-		return nil, err
+			if !authorized(token) {
+				c.AbortWithError(http.StatusForbidden, utils.NewApiError(err, http.StatusForbidden, c, "TRACE-ID"))
+				return
+			}
+
+		} else {
+			c.AbortWithError(http.StatusUnauthorized, utils.NewApiError(errors.New("http authorization expected"), http.StatusUnauthorized, c, "TRACE-ID"))
+			return
+		}
 	}
-
-	if !provider.Verify(t) {
-		return nil, errors.New("failed verifying token")
-	}
-
-	return t, err
 }
 
-func (provider *OIDProvider) Token() error {
-	// [authentikurl]/application/o/token/
-	return nil
-}
-
-func (provider *OIDProvider) UserInfo() error {
-	// [authentikurl]/application/o/userinfo/
-	return nil
-}
-
-func (provider *OIDProvider) Verify(token *oauth2.Token) bool {
-
-	rawToken, ok := token.Extra("id_token").(string)
-	if !ok {
-		return false
-	}
-
-	oidcConfig := &oidc.Config{
-		ClientID: provider.oauthCfg.ClientID,
-	}
-
-	_, err := provider.provider.Verifier(oidcConfig).Verify(provider.authProviderCfg.Ctx, rawToken)
-	if err != nil {
-		return false
-	}
-
+func authorized(t *jwt.Token) bool {
 	return true
 }
